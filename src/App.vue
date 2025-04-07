@@ -1,7 +1,5 @@
 <template>
     <ElConfigProvider :locale="zhCn">
-
-
         <div>
             <span>主要：</span>
             <span>{{ now }}</span>
@@ -32,7 +30,6 @@
                         <ElButton>清空并创建</ElButton>
                         <ElButton>取消</ElButton>
                     </ElFormItem>
-
                 </ElForm>
             </div>
             <div>
@@ -40,9 +37,7 @@
                     {{ count_down_setting }}
                 </ElText>
             </div>
-
         </div>
-
     </ElConfigProvider>
 </template>
 <script setup>
@@ -66,7 +61,6 @@ onMounted(() => {
     now_timeout()
 
 })
-
 // 倒计时对象
 const timer = ref({
     time_0: 1,
@@ -90,8 +84,6 @@ const timer_show = computed(() => {
     return down.value
 })
 // timer.value.time_0 + timer.value.time
-
-
 // 快捷设置倒计时
 const count_down_setting = ref('')
 function count_down_submit() {
@@ -117,7 +109,6 @@ function count_down_submit() {
         let s = numArray[2] * 1000
         after = h + m + s
         console.log(3);
-
     } else {
         console.log('无效');
         return
