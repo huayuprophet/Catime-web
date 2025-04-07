@@ -11,9 +11,14 @@
             <span>{{ timer_show }}</span>
         </div>
         <div>
-            <ElButton @click="count_down_button_click">{{ is_pause ? '继续' : '暂停' }}</ElButton>
-
-
+            <ElButton @click="count_down_button_click" :type="is_pause ? 'info' : ''">
+                <ElIcon>
+                    <VideoPlay v-show="is_pause">
+                    </VideoPlay>
+                    <VideoPause v-show="!is_pause"></VideoPause>
+                </ElIcon>
+                {{ is_pause ? '继续' : '暂停' }}
+            </ElButton>
         </div>
         <div style="margin-top: 2rem;">
             <div>
@@ -44,6 +49,7 @@
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { ref, onMounted, provide, computed } from 'vue';
+import { VideoPause, VideoPlay } from '@element-plus/icons-vue';
 // 当前时间
 const now = ref(0)
 // 提供给组件
