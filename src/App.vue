@@ -4,20 +4,10 @@
             <span>主要：</span>
             <span>{{ now }}</span>
         </div>
-        <div>
-            <span>倒计时：</span>
-            <span>{{ timer_show }}</span>
-        </div>
-        <div>
-            <ElButton @click="count_down_button_click" :type="is_pause ? 'info' : ''">
-                <ElIcon>
-                    <VideoPlay v-show="is_pause">
-                    </VideoPlay>
-                    <VideoPause v-show="!is_pause"></VideoPause>
-                </ElIcon>
-                {{ is_pause ? '继续' : '暂停' }}
-            </ElButton>
-        </div>
+        <ElDivider></ElDivider>
+        <timer_item>
+            <ElText>slot</ElText>
+        </timer_item>
         <div style="margin-top: 2rem;">
             <div>
                 <ElForm @submit.prevent="count_down_submit" style="max-width: 480px;">
@@ -43,8 +33,8 @@
 <script setup>
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import { ref, onMounted, provide, computed } from 'vue';
-import { VideoPause, VideoPlay } from '@element-plus/icons-vue';
+import { ref, onMounted, provide } from 'vue';
+import timer_item from './components/timer_item.vue';
 // 当前时间
 const now = ref(0)
 // 提供给组件
@@ -63,27 +53,9 @@ onMounted(() => {
 })
 // 倒计时对象
 const timer = ref({
-    time_0: 1,
-    time: 6,
+    time_0: 0,
+    time: 0
 })
-const time_1 = computed(() => {
-    return timer.value.time_0 + timer.value.time
-})
-const timing = computed(() => {
-    return now.value - timer.value.time_0
-})
-const down = computed(() => {
-    return time_1.value - now.value
-})
-
-// 展示的倒计时时间
-const timer_show = computed(() => {
-    if (is_pause.value) {
-        return timer.value.time
-    }
-    return down.value
-})
-// timer.value.time_0 + timer.value.time
 // 快捷设置倒计时
 const count_down_setting = ref('')
 function count_down_submit() {
@@ -117,23 +89,5 @@ function count_down_submit() {
     timer.value.time = after
 }
 
-// 暂停倒计时
-const is_pause = ref(false)
-function count_down_pause() {
-    is_pause.value = true
-    timer.value.time = down.value
-}
-// 继续倒计时
-function count_down_continue() {
-    timer.value.time_0 = Date.now();
-    is_pause.value = false
-}
-// 暂停继续按钮点击事件
-function count_down_button_click() {
-    if (is_pause.value) {
-        count_down_continue()
-    } else {
-        count_down_pause()
-    }
-}
+
 </script>
