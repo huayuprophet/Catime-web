@@ -1,14 +1,30 @@
 <template>
-<div>
-{{ test }}
-</div>
+    <div>
+        <ElText>
+            {{ timers }}
+        </ElText>
+    </div>
+    <div>
+        <ElButton>
+            测试创建一个预制参数的timer
+        </ElButton>
+        <ElButton>
+            测试使用子组件模板语法expose的方法实现群控
+        </ElButton>
+        <ElButton>
+            模拟timeout以测试触发结束事件
+        </ElButton>
+    </div>
+    <div>激活(此行使用超大的字): {{ activated }}</div>
+    <div>
+        实时时间 {{ yyyymmddhhmmss_now }}
+    </div>
     <ElConfigProvider :locale="zhCn">
-        <div>
-            <span>主要：</span>
-            <span>{{ now }}</span>
-        </div>
         <ElDivider></ElDivider>
         <ElCard>
+            <template #header>
+                计时列表
+            </template>
             <timer_item v-for="(item, index) in timers" ref="items" :timer="item">
                 <slot>
                     <ElButton :icon="Delete" type="danger" plain @click="timers.splice(index, 1)"> </ElButton>
@@ -41,16 +57,17 @@
 <script setup>
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import { ref, onMounted, provide, useTemplateRef } from 'vue';
+import { ref, onMounted, provide, useTemplateRef, computed } from 'vue';
 import timer_item from './components/timer_item.vue';
 import { Delete } from '@element-plus/icons-vue';
-import { ms_to_time ,timestamp_to_datetime} from './time_function';
-
-
-
-const test=ref('')
-onMounted(()=>{
-    test.value=timestamp_to_datetime(1744170906000)
+import { timestamp_to_datetime } from './time_function';
+// 激活的时间
+const activated = ref({})
+// 默认激活当前时间
+onMounted(() => {
+    activated.value = computed(() => {
+        return now.value
+    })
 })
 // 当前时间
 const now = ref(0)
@@ -67,10 +84,15 @@ function now_timeout() {
 onMounted(() => {
     now_timeout()
 })
+// 实时时间显示
+const yyyymmddhhmmss_now = computed(() => {
+    return timestamp_to_datetime(now.value)
+})
 const timers = ref(
     [{
         time_0: now.value,
-        time: 6000
+        time: 6000,
+        state_code: 0
     }])
 // 快捷设置倒计时
 const count_down_setting = ref('')
@@ -112,6 +134,6 @@ function count_down_submit() {
 const items = useTemplateRef('items')
 onMounted(() => {
     console.log(items.value[0]);
-    items.value[0].alertt()
+    // items.value[0].alertt()
 })
 </script>
