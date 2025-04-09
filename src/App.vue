@@ -1,15 +1,21 @@
 <template>
+<div>
+{{ test }}
+</div>
     <ElConfigProvider :locale="zhCn">
         <div>
             <span>主要：</span>
             <span>{{ now }}</span>
         </div>
         <ElDivider></ElDivider>
-        <timer_item v-for="(item, index) in timer2" ref="items" :timer="item">
-            <slot>
-                <ElButton :icon="Delete" type="danger" plain> </ElButton>
-            </slot>
-        </timer_item>
+        <ElCard>
+            <timer_item v-for="(item, index) in timers" ref="items" :timer="item">
+                <slot>
+                    <ElButton :icon="Delete" type="danger" plain @click="timers.splice(index, 1)"> </ElButton>
+                </slot>
+            </timer_item>
+            <!-- <ElEmpty></ElEmpty> -->
+        </ElCard>
         <div style="margin-top: 2rem;">
             <div>
                 <ElForm @submit.prevent="count_down_submit" style="max-width: 480px;">
@@ -38,6 +44,14 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { ref, onMounted, provide, useTemplateRef } from 'vue';
 import timer_item from './components/timer_item.vue';
 import { Delete } from '@element-plus/icons-vue';
+import { ms_to_time ,timestamp_to_datetime} from './time_function';
+
+
+
+const test=ref('')
+onMounted(()=>{
+    test.value=timestamp_to_datetime(1744170906000)
+})
 // 当前时间
 const now = ref(0)
 // 提供给组件
@@ -53,14 +67,15 @@ function now_timeout() {
 onMounted(() => {
     now_timeout()
 })
-const timer2 = ref(
+const timers = ref(
     [{
         time_0: now.value,
         time: 6000
     }])
-const list = ref([1])
 // 快捷设置倒计时
 const count_down_setting = ref('')
+
+// 提交的字符串转换为毫秒数
 function count_down_submit() {
     let str = count_down_setting.value
     // 使用正则表达式来匹配一个非数字字符
@@ -87,19 +102,16 @@ function count_down_submit() {
         console.log('无效');
         return
     }
-    timer2.value.push({
+    timers.value.push({
         time_0: now.value,
         time: after
     })
-    // timer.value.time_0 = now.value
-    // timer.value.time = after
-    alert(after)
+    console.log(after)
 }
+// expose 计时器组件模板语法
 const items = useTemplateRef('items')
 onMounted(() => {
     console.log(items.value[0]);
     items.value[0].alertt()
 })
-
-
 </script>

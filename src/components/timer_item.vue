@@ -26,12 +26,6 @@
                         </ElIcon>
                         重新开始
                     </ElButton>
-                    <ElButton @click="set_count_up" plain>
-                        开始正计时
-                    </ElButton>
-                    <ElButton @click="set_count_down_5s" plain>
-                        开始倒计时5秒
-                    </ElButton>
                     <ElButton @click="set_count_stop" type="warning" plain>
                         <ElIcon>
                             <Close></Close>
@@ -69,9 +63,7 @@ const now = inject('now')
 //     // 是否正计时类型
 //     count_up: false
 // })
-const name = ref(
-    '666'
-)
+const name = ref('666')
 // const name=computed(()=>{
 //     let q1= '时分秒'
 //     let q2=timer.value.count_up?'正计时':'倒计时'
@@ -174,7 +166,6 @@ function pause_continue_click() {
         count_down_button_click()
     }
 }
-
 // 停止计时
 const is_stop = ref(false)
 function set_count_stop() {
@@ -196,20 +187,5 @@ function reset() {
     is_stop.value = false
 }
 
-function set_count_up() {
-    timer_from({
-        time_0: now.value,
-        count_up: true
-    })
-}
-function set_count_down_5s() {
-    timer_from({
-        time_0: now.value,
-        time: 5000
-    })
-}
-function alertt() {
-    // alert('t')
-}
-defineExpose({ alertt })
+defineExpose({  })
 </script>
