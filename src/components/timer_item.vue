@@ -2,7 +2,7 @@
     <div>
         <div v-if="!is_stop">
             <ElSpace>
-                <ElText>name</ElText>
+                <ElText>描述: {{ name }}</ElText>
                 <ElText v-if="!timer.count_up">
                     倒计时：{{ timer_show }}/{{ time_memory }}
                 </ElText>
@@ -26,14 +26,17 @@
                         </ElIcon>
                         重新开始
                     </ElButton>
-                    <ElButton @click="set_count_up">
+                    <ElButton @click="set_count_up" plain>
                         开始正计时
                     </ElButton>
-                    <ElButton @click="set_count_down_5s">
+                    <ElButton @click="set_count_down_5s" plain>
                         开始倒计时5秒
                     </ElButton>
-                    <ElButton @click="set_count_stop">
-                        stop
+                    <ElButton @click="set_count_stop" type="warning" plain>
+                        <ElIcon>
+                            <Close></Close>
+                        </ElIcon>
+                        停止
                     </ElButton>
                     <slot></slot>
                 </ElButtonGroup>
@@ -42,6 +45,13 @@
         <div v-if="is_stop">
             <ElSpace>
                 <ElText type="info">已停止</ElText>
+                <ElButton @click="reset">
+                    <ElIcon>
+                        <RefreshRight />
+                    </ElIcon>
+                    重新开始
+                </ElButton>
+                <slot></slot>
             </ElSpace>
         </div>
         <ElDivider></ElDivider>
@@ -49,25 +59,33 @@
 </template>
 <script setup>
 import { inject, ref, computed } from 'vue';
-import { VideoPause, VideoPlay, RefreshRight } from '@element-plus/icons-vue';
+import { VideoPause, VideoPlay, RefreshRight, Close } from '@element-plus/icons-vue';
+const props = defineProps(['timer'])
 // 实时时间-毫秒级时间戳
 const now = inject('now')
-// 倒计时对象
-const timer = ref({
-    time_0: 1,
-    time: 6,
-    // 是否正计时类型
-    count_up: false
-})
+// const timer = ref({
+//     time_0: 1,
+//     time: 6,
+//     // 是否正计时类型
+//     count_up: false
+// })
+const name = ref(
+    '666'
+)
+// const name=computed(()=>{
+//     let q1= '时分秒'
+//     let q2=timer.value.count_up?'正计时':'倒计时'
+//     let q3= '多久'
+// })
 // 牢记原始倒计时时间
-const time_memory = ref(timer.value.time)
+const time_memory = ref(props.timer.time)
 // 倒计时结束时间
 const time_1 = computed(() => {
-    return timer.value.time_0 + timer.value.time
+    return props.timer.time_0 + props.timer.time
 })
 // 正计时时间
 const timing = computed(() => {
-    return now.value - timer.value.time_0
+    return now.value - props.timer.time_0
 })
 // 剩余倒计时时间
 const down = computed(() => {
@@ -77,18 +95,21 @@ const down = computed(() => {
 const timer_show = computed(() => {
     // 暂停时显示暂停值
     if (is_pause.value) {
-        return timer.value.time
+        return props.timer.time
     }
     // 正计时显示正计时的时间
-    if (timer.value.count_up) {
+    if (props.timer.count_up) {
         return timing.value
+    }
+    if (timeout.value) {
+        return '已完成'
     }
     // 倒计时时间
     return down.value
 })
 // 倒计时是否超时
 const timeout = computed(() => {
-    if (timer.value.count_up) {
+    if (props.timer.count_up) {
         // 忽略正计时超时
         return false
     }
@@ -98,7 +119,7 @@ const timeout = computed(() => {
 })
 // 状态文本
 const state = computed(() => {
-    let counting_state = timer.value.count_up ? '正计时中' : '倒计时中'
+    let counting_state = props.timer.count_up ? '正计时中' : '倒计时中'
     if (is_pause.value) {
         return '暂停中'
     }
@@ -111,11 +132,11 @@ const state = computed(() => {
 const is_pause = ref(false)
 function count_down_pause() {
     is_pause.value = true
-    timer.value.time = down.value
+    props.timer.time = down.value
 }
 // 继续倒计时
 function count_down_continue() {
-    timer.value.time_0 = now.value;
+    props.timer.time_0 = now.value;
     is_pause.value = false
 }
 // 暂停继续倒计时按钮点击事件
@@ -129,11 +150,11 @@ function count_down_button_click() {
 // 暂停正计时
 function count_up_pause() {
     is_pause.value = true
-    timer.value.time = timing.value
+    props.timer.time = timing.value
 }
 // 继续正计时
 function count_up_continue() {
-    timer.value.time_0 = now.value - timer.value.time
+    props.timer.time_0 = now.value - props.timer.time
     is_pause.value = false
 }
 // 暂停继续正计时按钮点击事件
@@ -147,7 +168,7 @@ function count_up_button_click() {
 // 暂停按钮点击事件
 function pause_continue_click() {
     // 检查是倒计时还是正计时
-    if (timer.value.count_up) {
+    if (props.timer.count_up) {
         count_up_button_click()
     } else {
         count_down_button_click()
@@ -161,14 +182,16 @@ function set_count_stop() {
 }
 // 手动设置计时事项
 function timer_from(obj) {
-    timer.value = obj
+    props.timer.time_0 = obj.time_0
+    props.timer.time = obj.time
+    props.timer.count_up = obj.count_up
     time_memory.value = obj.time
     is_pause.value = false
 }
 // 重设计时事项
 function reset() {
-    timer.value.time_0 = now.value;
-    timer.value.time = time_memory.value
+    props.timer.time_0 = now.value;
+    props.timer.time = time_memory.value
     is_pause.value = false
     is_stop.value = false
 }
@@ -186,7 +209,7 @@ function set_count_down_5s() {
     })
 }
 function alertt() {
-    alert('t')
+    // alert('t')
 }
-defineExpose({alertt})
+defineExpose({ alertt })
 </script>

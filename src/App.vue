@@ -5,8 +5,10 @@
             <span>{{ now }}</span>
         </div>
         <ElDivider></ElDivider>
-        <timer_item v-for="(item, index) in timer2" ref="items">
-            <slot></slot>
+        <timer_item v-for="(item, index) in timer2" ref="items" :timer="item">
+            <slot>
+                <ElButton :icon="Delete" type="danger" plain> </ElButton>
+            </slot>
         </timer_item>
         <div style="margin-top: 2rem;">
             <div>
@@ -33,8 +35,9 @@
 <script setup>
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import { ref, onMounted, provide,useTemplateRef } from 'vue';
+import { ref, onMounted, provide, useTemplateRef } from 'vue';
 import timer_item from './components/timer_item.vue';
+import { Delete } from '@element-plus/icons-vue';
 // 当前时间
 const now = ref(0)
 // 提供给组件
@@ -49,18 +52,12 @@ function now_timeout() {
 }
 onMounted(() => {
     now_timeout()
-
-})
-// 倒计时对象
-const timer = ref({
-    time_0: 0,
-    time: 0
 })
 const timer2 = ref(
     [{
-    time_0: 0,
-    time: 0
-}])
+        time_0: now.value,
+        time: 6000
+    }])
 const list = ref([1])
 // 快捷设置倒计时
 const count_down_setting = ref('')
@@ -90,12 +87,16 @@ function count_down_submit() {
         console.log('无效');
         return
     }
-    timer.value.time_0 = now.value
-    timer.value.time = after
+    timer2.value.push({
+        time_0: now.value,
+        time: after
+    })
+    // timer.value.time_0 = now.value
+    // timer.value.time = after
     alert(after)
 }
-const items=useTemplateRef('items')
-onMounted(()=>{
+const items = useTemplateRef('items')
+onMounted(() => {
     console.log(items.value[0]);
     items.value[0].alertt()
 })
