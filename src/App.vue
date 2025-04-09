@@ -5,8 +5,8 @@
             <span>{{ now }}</span>
         </div>
         <ElDivider></ElDivider>
-        <timer_item>
-            <ElText>slot</ElText>
+        <timer_item v-for="(item, index) in timer2" ref="items">
+            <slot></slot>
         </timer_item>
         <div style="margin-top: 2rem;">
             <div>
@@ -33,7 +33,7 @@
 <script setup>
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import { ref, onMounted, provide } from 'vue';
+import { ref, onMounted, provide,useTemplateRef } from 'vue';
 import timer_item from './components/timer_item.vue';
 // 当前时间
 const now = ref(0)
@@ -56,12 +56,18 @@ const timer = ref({
     time_0: 0,
     time: 0
 })
+const timer2 = ref(
+    [{
+    time_0: 0,
+    time: 0
+}])
+const list = ref([1])
 // 快捷设置倒计时
 const count_down_setting = ref('')
 function count_down_submit() {
     let str = count_down_setting.value
-    // 使用正则表达式 /\s+/ 来匹配一个或多个空格
-    let strArray = str.split(/\s+/);
+    // 使用正则表达式来匹配一个非数字字符
+    let strArray = str.split(/\D/);
     let numArray = strArray.map(Number);
     let len = numArray.length;
     let after = 0
@@ -74,7 +80,6 @@ function count_down_submit() {
         let s = numArray[1] * 1000
         after = m + s
         console.log(2);
-
     } else if (len === 3) {
         let h = numArray[0] * 360000
         let m = numArray[1] * 60000
@@ -87,7 +92,13 @@ function count_down_submit() {
     }
     timer.value.time_0 = now.value
     timer.value.time = after
+    alert(after)
 }
+const items=useTemplateRef('items')
+onMounted(()=>{
+    console.log(items.value[0]);
+    items.value[0].alertt()
+})
 
 
 </script>
