@@ -5,7 +5,7 @@
         </ElText>
     </div>
     <div>
-        <ElButton>
+        <ElButton @click="test">
             测试创建一个预制参数的timer
         </ElButton>
         <ElButton>
@@ -25,7 +25,7 @@
             <template #header>
                 计时列表
             </template>
-            <timer_item v-for="(item, index) in timers" ref="items" :timer="item">
+            <timer_item v-for="(item, index) in timers" ref="items" :timer="item" :index="index">
                 <slot>
                     <ElButton :icon="Delete" type="danger" plain @click="timers.splice(index, 1)"> </ElButton>
                 </slot>
@@ -61,17 +61,15 @@ import { ref, onMounted, provide, useTemplateRef, computed } from 'vue';
 import timer_item from './components/timer_item.vue';
 import { Delete } from '@element-plus/icons-vue';
 import { timestamp_to_datetime } from './time_function';
-// 激活的时间
-const activated = ref({})
-// 默认激活当前时间
+// 激活的时间 默认激活当前时间
+const activated = ref(-1)
+provide('activated', activated)
 onMounted(() => {
-    activated.value = computed(() => {
-        return now.value
-    })
+
 })
 // 当前时间
 const now = ref(0)
-// 提供给组件
+// 当前时间提供给组件
 provide('now', now)
 // 实时更新时间
 now.value = Date.now()
@@ -136,4 +134,13 @@ onMounted(() => {
     console.log(items.value[0]);
     // items.value[0].alertt()
 })
+
+
+function test() {
+    timers.value.push({
+        time: 5000,
+        count_up: 0,
+        time_0: now.value
+    })
+}
 </script>

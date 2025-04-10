@@ -10,7 +10,7 @@
 
 如果想支持作者，请点击项目的星星⭐，为项目增添人气。
 
-[logo](doc/logo.png)
+[logo](docs/logo.png)
 
 ## 功能
 

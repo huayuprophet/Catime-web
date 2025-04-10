@@ -5,7 +5,7 @@
                 {{ timer.des }}
             </ElDescriptionsItem>
             <ElDescriptionsItem v-if="!timer.count_up" label="倒计时">
-                {{ timer_show }}/{{ time_memory }}
+                {{ timer_show }}/{{ time_memory_show }}
             </ElDescriptionsItem>
             <ElDescriptionsItem v-if="timer.count_up" label="正计时">
                 {{ timer_show }}
@@ -48,55 +48,71 @@
 <script setup>
 import { inject, ref, computed, watch, onMounted } from 'vue';
 import { VideoPause, VideoPlay, RefreshRight, Close } from '@element-plus/icons-vue';
+import { ms_to_time } from '@/time_function';
 // 导入组件计时项目对象-props
-const props = defineProps(['timer'])
+// 导入对象索引
+const props = defineProps(['timer','index'])
 // 导入状态、声明函数
 props.timer.state_code = props.timer.state_code ? props.timer.state_code : 0
 const is_pause = ref(props.timer.state_code == 1)
 const is_stop = ref(props.timer.state_code == 3)
 // 导入并牢记原始倒计时时间
-props.timer.time_memory = props.timer.time_memory ? props.timer.time_memory : props.timer.time
-const time_memory = computed(() => {
-    return props.timer.time_memory
+if (props.timer.count_up) {
+    // 正计时的时候不导入，以实现重设时为0
+    props.timer.time_memory = 0
+} else {
+    props.timer.time_memory = props.timer.time_memory ? props.timer.time_memory : props.timer.time
+}
+const time_memory_show = computed(() => {
+    return ms_to_time(props.timer.time_memory)
 })
 // 实时时间-毫秒级时间戳
 const now = inject('now')
-// 计时器创建时间
+// 以下导入props原对象属性的所有内容
+// 计时器创建时间-默认值为当前时间
 props.timer.created_at = props.timer.created_at ? props.timer.created_at : now.value
+// 计时器开始时间-默认值为当前时间
+props.timer.time_0 = props.timer.time_0 ? props.timer.time_0 : now.value
 // 计时器描述
 props.timer.des = props.timer.des ? props.timer.des
-    : '66'
+    : '66';
+// 缓存的需跳过时间-暂停继续时使用 默认为0毫秒
+props.timer.jump = props.timer.jump ? props.timer.jump : 0
 //     let q1= '正倒计时时分秒'
 // 倒计时结束时间
 const time_1 = computed(() => {
-    return props.timer.time_0 + props.timer.time
+    return props.timer.time_0 + props.timer.time + props.timer.jump
 })
 // 正计时时间
 const timing = computed(() => {
-    return now.value - props.timer.time_0 - props.timer.time
+    return now.value - props.timer.time_0 + props.timer.jump
+    // return now.value - props.timer.time_0
 })
-// 剩余倒计时时间
+// 剩余倒计时时间、超时时间。
 const down = computed(() => {
+    // return Math.abs()
     return time_1.value - now.value
 })
 // 展示的倒计时时间
 const timer_show = computed(() => {
     // 暂停时显示暂停值
     if (is_pause.value) {
-        return props.timer.time
+        // return ms_to_time(props.timer.time)
+        return ms_to_time(props.timer.jump)
+
     }
     if (is_stop.value) {
         return '计时已停止'
     }
     // 正计时显示正计时的时间
     if (props.timer.count_up) {
-        return timing.value
+        return ms_to_time(timing.value)
     }
     if (is_timeout.value) {
-        return '已完成, 超出xx秒'
+        return '已完成, 超出' + ms_to_time(Math.abs(time_1.value - now.value)) + ''
     }
     // 倒计时时间
-    return down.value
+    return ms_to_time(down.value)
 })
 // 倒计时是否超时
 const is_timeout = computed(() => {
@@ -185,11 +201,12 @@ function count_down_button_click() {
 // 暂停正计时
 function count_up_pause() {
     is_pause.value = true
-    props.timer.time = timing.value
+    props.timer.jump = timing.value
 }
 // 继续正计时
 function count_up_continue() {
-    props.timer.time_0 = now.value - props.timer.time
+    // props.timer.time_0 = now.value - props.timer.time
+    props.timer.time_0 = now.value
     is_pause.value = false
 }
 // 暂停继续正计时按钮点击事件
@@ -218,13 +235,14 @@ function timer_from(obj) {
     props.timer.time_0 = obj.time_0
     props.timer.time = obj.time
     props.timer.count_up = obj.count_up
-    time_memory.value = obj.time
+    timer.time_memory.value = obj.time
     is_pause.value = false
 }
 // 重设计时事项
 function reset() {
     props.timer.time_0 = now.value;
-    props.timer.time = time_memory.value
+    props.timer.time = props.timer.time_memory
+    props.timer.jump = 0
     is_pause.value = false
     is_stop.value = false
 }

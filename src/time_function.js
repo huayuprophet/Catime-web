@@ -40,3 +40,31 @@ export function timestamp_to_date(milliseconds) {
 export function timestamp_to_datetime(milliseconds) {
     return timestamp_to_date(milliseconds) + ' ' + timestamp_to_time(milliseconds)
 }
+export function str_to_millseconds(str) {
+    // let str = count_down_setting.value
+    // 使用正则表达式来匹配一个非数字字符
+    let strArray = str.split(/\D/);
+    let numArray = strArray.map(Number);
+    let len = numArray.length;
+    let after = 0
+    if (len === 1) {
+        let m = numArray[0] * 60000
+        after = m
+        console.log(1);
+    } else if (len === 2) {
+        let m = numArray[0] * 60000
+        let s = numArray[1] * 1000
+        after = m + s
+        console.log(2);
+    } else if (len === 3) {
+        let h = numArray[0] * 360000
+        let m = numArray[1] * 60000
+        let s = numArray[2] * 1000
+        after = h + m + s
+        console.log(3);
+    } else {
+        console.log('无效');
+        return
+    }
+    return after
+}
