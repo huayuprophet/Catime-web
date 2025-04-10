@@ -63,6 +63,7 @@ import { Delete } from '@element-plus/icons-vue';
 import { timestamp_to_datetime } from './time_function';
 // 激活的时间 默认激活当前时间
 const activated = ref(-1)
+// 激活项提供给组件
 provide('activated', activated)
 onMounted(() => {
 
@@ -139,7 +140,7 @@ onMounted(() => {
 function test() {
     timers.value.push({
         time: 5000,
-        count_up: 0,
+        count_up: 1,
         time_0: now.value
     })
 }

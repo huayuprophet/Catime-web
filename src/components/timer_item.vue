@@ -15,7 +15,7 @@
                     {{ state }}
                 </ElTag>
             </ElDescriptionsItem>
-            <ElDescriptionsItem label="创建时间">{{ timer.created_at }}</ElDescriptionsItem>
+            <ElDescriptionsItem label="创建时间">{{ created_at_show }}</ElDescriptionsItem>
             <ElDescriptionsItem label="操作">
                 <ElButtonGroup>
                     <ElButton @click="pause_continue_click" :type="is_pause ? 'info' : 'primary'"
@@ -48,10 +48,10 @@
 <script setup>
 import { inject, ref, computed, watch, onMounted } from 'vue';
 import { VideoPause, VideoPlay, RefreshRight, Close } from '@element-plus/icons-vue';
-import { ms_to_time } from '@/time_function';
+import { ms_to_time, timestamp_to_datetime } from '@/time_function';
 // 导入组件计时项目对象-props
 // 导入对象索引
-const props = defineProps(['timer','index'])
+const props = defineProps(['timer', 'index'])
 // 导入状态、声明函数
 props.timer.state_code = props.timer.state_code ? props.timer.state_code : 0
 const is_pause = ref(props.timer.state_code == 1)
@@ -71,6 +71,10 @@ const now = inject('now')
 // 以下导入props原对象属性的所有内容
 // 计时器创建时间-默认值为当前时间
 props.timer.created_at = props.timer.created_at ? props.timer.created_at : now.value
+// 适合展示的创建时间
+const created_at_show = computed(() => {
+    return timestamp_to_datetime(props.timer.created_at)
+})
 // 计时器开始时间-默认值为当前时间
 props.timer.time_0 = props.timer.time_0 ? props.timer.time_0 : now.value
 // 计时器描述
@@ -99,7 +103,6 @@ const timer_show = computed(() => {
     if (is_pause.value) {
         // return ms_to_time(props.timer.time)
         return ms_to_time(props.timer.jump)
-
     }
     if (is_stop.value) {
         return '计时已停止'
