@@ -60,7 +60,14 @@
             </div>
             <div>
                 <ElText type="info">
-                    {{ count_down_setting }}
+                    示例：<br>
+                    2.6.50 倒计时2小时6分钟50秒。<br>
+                    2.20 倒计时2分钟20秒<br>
+                    .40 倒计时40秒<br>
+                    6 倒计时6分钟。<br>
+                    120 倒计时120分钟<br>
+                    1..48 倒计时1小时48秒
+
                 </ElText>
             </div>
         </div>
