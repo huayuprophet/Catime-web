@@ -26,6 +26,13 @@
                         </ElIcon>
                         {{ is_pause ? '继续' : '暂停' }}
                     </ElButton>
+                    <ElButton @click="active" :type="is_activated ? 'success' : 'default'" plain>
+                        <el-icon v-show="!is_activated">
+                            <Star />
+                        </el-icon>
+                        <el-icon v-show="is_activated"><StarFilled /></el-icon>
+                        激活
+                    </ElButton>
                     <ElButton @click="reset" plain>
                         <ElIcon>
                             <RefreshRight />
@@ -48,22 +55,24 @@
 </template>
 <script setup>
 import { inject, ref, computed, watch, onMounted } from 'vue';
-import { VideoPause, VideoPlay, RefreshRight, Close } from '@element-plus/icons-vue';
-import { ms_to_time, timestamp_to_datetime } from '@/time_function';
+import { VideoPause, VideoPlay, RefreshRight, Close, Star,StarFilled } from '@element-plus/icons-vue';
+import { ms_to_time, timestamp_to_datetime, uuidv4 } from '@/time_function';
 // 实时时间-毫秒级时间戳
 const now = inject('now')
 // 导入组件计时项目对象-props
 // 导入对象索引 index与创建的timers值索引一致、不保证与模板语法ref索引一致
 // 导入已激活的timer对象索引
 // 导入已激活的timer方法集
-const props = defineProps(['timer', 'index', 'activated_index', 'activated_refs'])
+const props = defineProps(['timer', 'index', 'activated_id', 'activated_refs'])
+// 导入或生成原始id
+props.timer.id = props.timer.id ? props.timer.id : uuidv4()
 // 检查激活状态
 const is_activated = computed(() => {
-    return props.activated_index === props.index
+    return props.activated_refs.id === props.timer.id
 })
 // 设置激活
 function active() {
-    props.activated_index = props.index
+    props.activated_refs.id = props.timer.id
 }
 // 导出激活项关键配置
 watch(is_activated, (value) => {
@@ -92,15 +101,13 @@ props.timer.state_code = props.timer.state_code ? props.timer.state_code : 0
 // 暂停、结束状态
 const is_pause = ref(props.timer.state_code == 1)
 const is_stop = ref(props.timer.state_code == 3)
-// 初始时间
+// 计时器开始时间 默认为当前时间
 props.timer.time_0 = props.timer.time_0 ? props.timer.time_0 : now.value
 // 导入倒计时总时间 适合展示的倒计时总时间
 props.timer.time = props.timer.time ? props.timer.time : 0
 const time_show = computed(() => {
     return ms_to_time(props.timer.time)
 })
-// 生成原始id
-// props.timer.id = 
 // 以下导入props原对象属性的所有内容
 // 计时器创建时间-默认值为当前时间
 props.timer.created_at = props.timer.created_at ? props.timer.created_at : now.value
@@ -108,8 +115,6 @@ props.timer.created_at = props.timer.created_at ? props.timer.created_at : now.v
 const created_at_show = computed(() => {
     return timestamp_to_datetime(props.timer.created_at)
 })
-// 计时器开始时间-默认值为当前时间
-// props.timer.time_0 = props.timer.time_0 ? props.timer.time_0 : now.value
 // 计时器描述
 props.timer.des = props.timer.des ? props.timer.des
     : '66';
@@ -266,6 +271,10 @@ function count_up_button_click() {
 }
 // 暂停继续切换按钮点击事件
 function pause_continue_click() {
+    // 如果已结束或手动停止，则不予切换状态
+    if (is_timeout.value || is_stop.value) {
+        return false
+    }
     // 检查是倒计时还是正计时
     if (props.timer.count_up) {
         count_up_button_click()
@@ -307,6 +316,7 @@ function skip() {
     props.timer.jump = props.timer.time
     props.timer.time_0 = now.value
 }
+
 defineExpose({})
 
 </script>

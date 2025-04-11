@@ -5,6 +5,14 @@
         </ElText>
     </div>
     <div>
+        <ElText>
+            {{ activated_refs }}
+        </ElText>
+    </div>
+    <div>
+        <ElButton @click="test2">0</ElButton>
+    </div>
+    <div>
         <ElButton @click="test">
             测试创建一个预制参数的timer
         </ElButton>
@@ -15,7 +23,10 @@
             模拟timeout以测试触发结束事件
         </ElButton>
     </div>
-    <div>激活(此行使用超大的字): {{ activated_index }}</div>
+    <div>激活(此处使用超大的字): ({{ activated_refs.id }})</div>
+    <div style="font-size: 3rem;">
+        <activity_dial :refs="activated_refs"></activity_dial>
+    </div>
     <div>
         实时时间 {{ yyyymmddhhmmss_now }}
     </div>
@@ -26,7 +37,7 @@
                 计时列表
             </template>
             <timer_item v-for="(item, index) in timers" ref="items" :timer="item" :index="index"
-                :activated_index="activated_index" :activated_refs="activated_refs">
+                :activated_refs="activated_refs">
                 <slot>
                     <ElButton :icon="Delete" type="danger" plain @click="timers.splice(index, 1)"> </ElButton>
                 </slot>
@@ -61,31 +72,22 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { ref, onMounted, provide, useTemplateRef, computed } from 'vue';
 import timer_item from './components/timer_item.vue';
 import { Delete } from '@element-plus/icons-vue';
-import { timestamp_to_datetime } from './time_function';
+import { timestamp_to_datetime, uuidv4 } from './time_function';
+import activity_dial from './components/activity_dial.vue';
 // 激活的时间 默认激活当前时间
-const activated_index = ref(-1)
+// const activated_id = ref('')
 const activated_refs = ref({})
 // 激活项提供给组件
 
-
-onMounted(() => {
-
-})
 // 当前时间
-const now = ref(0)
+const now = ref(Date.now())
 // 当前时间提供给组件
 provide('now', now)
-// 实时更新时间
-now.value = Date.now()
-function now_timeout() {
-    setTimeout(() => {
-        now.value = Date.now()
-        now_timeout()
-    }, 20)
-}
-onMounted(() => {
-    now_timeout()
-})
+setInterval(() => {
+   console.log('interval');
+   now.value = Date.now()
+}, 150);
+
 // 实时时间显示
 const yyyymmddhhmmss_now = computed(() => {
     return timestamp_to_datetime(now.value)
@@ -140,9 +142,13 @@ onMounted(() => {
 })
 function test() {
     timers.value.push({
+        id: uuidv4(),
         time: 5000,
         count_up: 0,
         // time_0: now.value
     })
+}
+function test2() {
+    console.log(activated_refs.value.btn[0].action());
 }
 </script>
