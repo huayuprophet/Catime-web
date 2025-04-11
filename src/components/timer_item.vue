@@ -5,14 +5,14 @@
                 {{ timer.des }}
             </ElDescriptionsItem>
             <ElDescriptionsItem v-if="!timer.count_up" label="倒计时">
-                {{ timer_show }}/{{ time_memory_show }}
+                {{ timer_show }}/{{ time_show }}
             </ElDescriptionsItem>
             <ElDescriptionsItem v-if="timer.count_up" label="正计时">
                 {{ timer_show }}
             </ElDescriptionsItem>
             <ElDescriptionsItem label="状态">
                 <ElTag :type="state_type">
-                    {{ state }}
+                    {{ state_show }}
                 </ElTag>
             </ElDescriptionsItem>
             <ElDescriptionsItem label="创建时间">{{ created_at_show }}</ElDescriptionsItem>
@@ -42,6 +42,7 @@
                 </ElButtonGroup>
             </ElDescriptionsItem>
         </ElDescriptions>
+        <el-progress class="progress" :percentage="progress" :show-text="false" />
         <ElDivider></ElDivider>
     </div>
 </template>
@@ -49,25 +50,57 @@
 import { inject, ref, computed, watch, onMounted } from 'vue';
 import { VideoPause, VideoPlay, RefreshRight, Close } from '@element-plus/icons-vue';
 import { ms_to_time, timestamp_to_datetime } from '@/time_function';
-// 导入组件计时项目对象-props
-// 导入对象索引
-const props = defineProps(['timer', 'index'])
-// 导入状态、声明函数
-props.timer.state_code = props.timer.state_code ? props.timer.state_code : 0
-const is_pause = ref(props.timer.state_code == 1)
-const is_stop = ref(props.timer.state_code == 3)
-// 导入并牢记原始倒计时时间
-if (props.timer.count_up) {
-    // 正计时的时候不导入，以实现重设时为0
-    props.timer.time_memory = 0
-} else {
-    props.timer.time_memory = props.timer.time_memory ? props.timer.time_memory : props.timer.time
-}
-const time_memory_show = computed(() => {
-    return ms_to_time(props.timer.time_memory)
-})
 // 实时时间-毫秒级时间戳
 const now = inject('now')
+// 导入组件计时项目对象-props
+// 导入对象索引 index与创建的timers值索引一致、不保证与模板语法ref索引一致
+// 导入已激活的timer对象索引
+// 导入已激活的timer方法集
+const props = defineProps(['timer', 'index', 'activated_index', 'activated_refs'])
+// 检查激活状态
+const is_activated = computed(() => {
+    return props.activated_index === props.index
+})
+// 设置激活
+function active() {
+    props.activated_index = props.index
+}
+// 导出激活项关键配置
+watch(is_activated, (value) => {
+    if (value) {
+        props.activated_refs.timer_show = timer_show
+        props.activated_refs.state_show = state_show
+        props.activated_refs.state_code = state_code
+        props.activated_refs.progress = progress
+        props.activated_refs.btn = [{
+            label: "开始/暂停",
+            action: pause_continue_click,
+            type: 0
+        }, {
+            label: "停止/重设",
+            action: stop_reset_click,
+            type: 1
+        }, {
+            label: "跳至结束",
+            action: skip,
+            type: 2
+        },]
+    }
+}, { immediate: true })
+// 导入状态、声明函数
+props.timer.state_code = props.timer.state_code ? props.timer.state_code : 0
+// 暂停、结束状态
+const is_pause = ref(props.timer.state_code == 1)
+const is_stop = ref(props.timer.state_code == 3)
+// 初始时间
+props.timer.time_0 = props.timer.time_0 ? props.timer.time_0 : now.value
+// 导入倒计时总时间 适合展示的倒计时总时间
+props.timer.time = props.timer.time ? props.timer.time : 0
+const time_show = computed(() => {
+    return ms_to_time(props.timer.time)
+})
+// 生成原始id
+// props.timer.id = 
 // 以下导入props原对象属性的所有内容
 // 计时器创建时间-默认值为当前时间
 props.timer.created_at = props.timer.created_at ? props.timer.created_at : now.value
@@ -76,7 +109,7 @@ const created_at_show = computed(() => {
     return timestamp_to_datetime(props.timer.created_at)
 })
 // 计时器开始时间-默认值为当前时间
-props.timer.time_0 = props.timer.time_0 ? props.timer.time_0 : now.value
+// props.timer.time_0 = props.timer.time_0 ? props.timer.time_0 : now.value
 // 计时器描述
 props.timer.des = props.timer.des ? props.timer.des
     : '66';
@@ -85,24 +118,36 @@ props.timer.jump = props.timer.jump ? props.timer.jump : 0
 //     let q1= '正倒计时时分秒'
 // 倒计时结束时间
 const time_1 = computed(() => {
-    return props.timer.time_0 + props.timer.time + props.timer.jump
+    return props.timer.time_0 + props.timer.time
 })
 // 正计时时间
 const timing = computed(() => {
     return now.value - props.timer.time_0 + props.timer.jump
-    // return now.value - props.timer.time_0
 })
-// 剩余倒计时时间、超时时间。
+// 剩余倒计时时间 负值为超时的时间
 const down = computed(() => {
-    // return Math.abs()
-    return time_1.value - now.value
+    return time_1.value - now.value - props.timer.jump
+})
+// 剩余倒计时比例 每.3秒更新一次
+const progress_value = ref(1)
+setInterval(() => {
+    // 显示暂停值
+    if (is_pause.value || is_stop.value) {
+        return props.timer.count_up ? props.timer.jump / props.timer.time : (props.timer.time - props.timer.jump) / props.timer.time
+    }
+    progress_value.value = (down.value / props.timer.time)
+    // console.log(progress);
+}, 300);
+const progress = computed(() => {
+    return progress_value.value > 0 ? progress_value.value * 100 : 0
 })
 // 展示的倒计时时间
 const timer_show = computed(() => {
     // 暂停时显示暂停值
     if (is_pause.value) {
-        // return ms_to_time(props.timer.time)
-        return ms_to_time(props.timer.jump)
+        return ms_to_time(
+            props.timer.count_up ? props.timer.jump : props.timer.time - props.timer.jump
+        )
     }
     if (is_stop.value) {
         return '计时已停止'
@@ -112,7 +157,7 @@ const timer_show = computed(() => {
         return ms_to_time(timing.value)
     }
     if (is_timeout.value) {
-        return '已完成, 超出' + ms_to_time(Math.abs(time_1.value - now.value)) + ''
+        return '已完成, 超出' + ms_to_time(Math.abs(time_1.value - now.value))
     }
     // 倒计时时间
     return ms_to_time(down.value)
@@ -133,7 +178,7 @@ const is_timeout = computed(() => {
     }
 })
 // 状态文本
-const state = computed(() => {
+const state_show = computed(() => {
     // let counting_state = props.timer.count_up ? '正计时中' : '倒计时中'
     let counting_state = '计时中'
     if (is_stop.value) {
@@ -186,7 +231,7 @@ onMounted(() => {
 // 暂停倒计时
 function count_down_pause() {
     is_pause.value = true
-    props.timer.time = down.value
+    props.timer.jump = timing.value
 }
 // 继续倒计时
 function count_down_continue() {
@@ -208,7 +253,6 @@ function count_up_pause() {
 }
 // 继续正计时
 function count_up_continue() {
-    // props.timer.time_0 = now.value - props.timer.time
     props.timer.time_0 = now.value
     is_pause.value = false
 }
@@ -220,7 +264,7 @@ function count_up_button_click() {
         count_up_pause()
     }
 }
-// 暂停按钮点击事件
+// 暂停继续切换按钮点击事件
 function pause_continue_click() {
     // 检查是倒计时还是正计时
     if (props.timer.count_up) {
@@ -232,6 +276,7 @@ function pause_continue_click() {
 // 停止计时
 function set_count_stop() {
     is_stop.value = true
+    props.timer.jump = timing.value
 }
 // 手动设置计时事项
 function timer_from(obj) {
@@ -244,10 +289,24 @@ function timer_from(obj) {
 // 重设计时事项
 function reset() {
     props.timer.time_0 = now.value;
-    props.timer.time = props.timer.time_memory
+    props.timer.time = props.timer.time
     props.timer.jump = 0
     is_pause.value = false
     is_stop.value = false
 }
+// 停止重设切换按钮点击事件
+function stop_reset_click() {
+    if (is_stop.value) {
+        reset()
+    } else {
+        set_count_stop();
+    }
+}
+// 手动跳过 注意继续执行业务
+function skip() {
+    props.timer.jump = props.timer.time
+    props.timer.time_0 = now.value
+}
 defineExpose({})
+
 </script>
