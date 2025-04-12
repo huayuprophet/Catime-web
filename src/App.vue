@@ -65,9 +65,8 @@
                     2.20 倒计时2分钟20秒<br>
                     .40 倒计时40秒<br>
                     6 倒计时6分钟。<br>
-                    120 倒计时120分钟<br>
+                    120 倒计时2小时<br>
                     1..48 倒计时1小时48秒
-
                 </ElText>
             </div>
         </div>
@@ -91,8 +90,8 @@ const now = ref(Date.now())
 // 当前时间提供给组件
 provide('now', now)
 setInterval(() => {
-   console.log('interval');
-   now.value = Date.now()
+    console.log('interval');
+    now.value = Date.now()
 }, 150);
 
 // 实时时间显示
