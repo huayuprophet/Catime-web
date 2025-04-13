@@ -8,7 +8,6 @@
                     <div class="value">{{ timer.des }}</div>
                 </div>
             </ElCol>
-
             <!-- 倒计时/正计时 -->
             <ElCol :xs="24" :sm="12" :md="8" :lg="6" :xl="4">
                 <div class="info-item">
@@ -17,7 +16,6 @@
                     <div class="value">{{ timer_show }}<span v-if="!timer.count_up">/{{ time_show }}</span></div>
                 </div>
             </ElCol>
-
             <!-- 状态 -->
             <ElCol :xs="24" :sm="12" :md="8" :lg="6" :xl="4">
                 <div class="info-item">
@@ -27,7 +25,6 @@
                     </div>
                 </div>
             </ElCol>
-
             <!-- 创建时间 -->
             <ElCol :xs="24" :sm="12" :md="8" :lg="6" :xl="4">
                 <div class="info-item">
@@ -35,7 +32,6 @@
                     <div class="value">{{ created_at_show }}</div>
                 </div>
             </ElCol>
-
             <!-- 操作按钮 -->
             <ElCol :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                 <div class="info-item">
@@ -74,7 +70,6 @@
                 </div>
             </ElCol>
         </ElRow>
-
         <!-- 进度条 -->
         <el-progress class="progress" :percentage="progress" :show-text="false" />
         <ElDivider></ElDivider>
@@ -373,7 +368,5 @@ function skip() {
     props.timer.jump = props.timer.time
     props.timer.time_0 = now.value
 }
-
 defineExpose({})
-
 </script>

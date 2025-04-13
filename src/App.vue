@@ -1,4 +1,6 @@
 <template>
+  <nav_component></nav_component>
+
     <div>
         <ElText>
             {{ timers }}
@@ -20,12 +22,9 @@
             模拟timeout以测试触发结束事件
         </ElButton>
     </div>
-    <div>激活(此处使用超大的字): ({{  }})</div>
+    <div>置顶激活(此处使用超大的字): </div>
     <div>
-        <activity_dial ></activity_dial>
-    </div>
-    <div>
-        实时时间 {{ yyyymmddhhmmss_now }}
+        <activity_dial></activity_dial>
     </div>
     <ElConfigProvider :locale="zhCn">
         <ElDivider></ElDivider>
@@ -71,35 +70,19 @@
 <script setup>
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import { ref, onMounted, provide, useTemplateRef, computed } from 'vue';
+import { ref, onMounted, useTemplateRef } from 'vue';
 import timer_item from './components/timer_item.vue';
 import { Delete } from '@element-plus/icons-vue';
-import { str_to_millseconds, timestamp_to_datetime, uuidv4 } from './time_function';
+import { str_to_millseconds, uuidv4 } from './time_function';
 import activity_dial from './components/activity_dial.vue';
 import { useActiveTimerStore, useTimerStore } from './stores/timerStore';
-import { storeToRefs } from 'pinia';
+import nav_component from './components/nav.vue';
+
 
 
 const timer = useTimerStore()
-const active_timer=useActiveTimerStore()
+const active_timer = useActiveTimerStore()
 const { timers } = timer
-// const { timers } = storeToRefs(timer)
-onMounted(() => {
-    console.log(timers);
-    // console.log(timers.value);
-
-})
-// 激活的时间 默认激活当前时间
-// const activated_id = ref('')
-
-// 激活项提供给组件
-
-// 当前时间
-const now = storeToRefs(timer).now
-// 实时时间显示
-const yyyymmddhhmmss_now = computed(() => {
-    return timestamp_to_datetime(now.value)
-})
 
 // 快捷设置倒计时
 const count_down_setting = ref('')
@@ -111,7 +94,7 @@ function count_down_submit() {
         timer.add_timer({
             id: uuidv4(),
             time: time,
-           
+
         })
 
         return true
@@ -128,10 +111,10 @@ onMounted(() => {
     // items.value[0].alertt()
 })
 function test() {
-timer.add_timer({
-    id: uuidv4(),
-    time: 10000,
-    des: '测试',
-})
+    timer.add_timer({
+        id: uuidv4(),
+        time: 10000,
+        des: '测试',
+    })
 }
 </script>

@@ -1,5 +1,8 @@
 <template>
-    <el-progress type="circle" :percentage="template.progress">
+    <div class="active-title">
+    
+    </div>
+    <el-progress class="active-body" type="circle" :percentage="template.progress">
         {{ template.text }}
     </el-progress>
     <div>isdown {{ is_counting_down }}</div>
@@ -28,6 +31,4 @@ const is_counting_down = computed(() => {
     }
     return true
 })
-
-
 </script>
