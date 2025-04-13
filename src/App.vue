@@ -6,11 +6,8 @@
     </div>
     <div>
         <ElText>
-            {{ activated_refs }}
+            {{ active_timer }}
         </ElText>
-    </div>
-    <div>
-        <ElButton @click="test2">0</ElButton>
     </div>
     <div>
         <ElButton @click="test">
@@ -23,9 +20,9 @@
             模拟timeout以测试触发结束事件
         </ElButton>
     </div>
-    <div>激活(此处使用超大的字): ({{ activated_refs.id }})</div>
-    <div style="font-size: 3rem;">
-        <activity_dial :refs="activated_refs"></activity_dial>
+    <div>激活(此处使用超大的字): ({{  }})</div>
+    <div>
+        <activity_dial ></activity_dial>
     </div>
     <div>
         实时时间 {{ yyyymmddhhmmss_now }}
@@ -36,8 +33,7 @@
             <template #header>
                 计时列表
             </template>
-            <timer_item v-for="(item, index) in timers" ref="items" :timer="item" :index="index"
-                :activated_refs="activated_refs">
+            <timer_item v-for="(item, index) in timers" ref="items" :timer="item" :index="index">
                 <slot>
                     <ElButton :icon="Delete" type="danger" plain @click="timers.splice(index, 1)"> </ElButton>
                 </slot>
@@ -78,68 +74,53 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { ref, onMounted, provide, useTemplateRef, computed } from 'vue';
 import timer_item from './components/timer_item.vue';
 import { Delete } from '@element-plus/icons-vue';
-import { timestamp_to_datetime, uuidv4 } from './time_function';
+import { str_to_millseconds, timestamp_to_datetime, uuidv4 } from './time_function';
 import activity_dial from './components/activity_dial.vue';
+import { useActiveTimerStore, useTimerStore } from './stores/timerStore';
+import { storeToRefs } from 'pinia';
+
+
+const timer = useTimerStore()
+const active_timer=useActiveTimerStore()
+const { timers } = timer
+// const { timers } = storeToRefs(timer)
+onMounted(() => {
+    console.log(timers);
+    // console.log(timers.value);
+
+})
 // 激活的时间 默认激活当前时间
 // const activated_id = ref('')
-const activated_refs = ref({})
+
 // 激活项提供给组件
 
 // 当前时间
-const now = ref(Date.now())
-// 当前时间提供给组件
-provide('now', now)
-setInterval(() => {
-    console.log('interval');
-    now.value = Date.now()
-}, 150);
-
+const now = storeToRefs(timer).now
 // 实时时间显示
 const yyyymmddhhmmss_now = computed(() => {
     return timestamp_to_datetime(now.value)
 })
-const timers = ref(
-    [{
-        time_0: now.value,
-        time: 6000,
-        state_code: 0
-    }])
+
 // 快捷设置倒计时
 const count_down_setting = ref('')
 
-// 提交的字符串转换为毫秒数
+// 新增timer
 function count_down_submit() {
-    let str = count_down_setting.value
-    // 使用正则表达式来匹配一个非数字字符
-    let strArray = str.split(/\D/);
-    let numArray = strArray.map(Number);
-    let len = numArray.length;
-    let after = 0
-    if (len === 1) {
-        let m = numArray[0] * 60000
-        after = m
-        console.log(1);
-    } else if (len === 2) {
-        let m = numArray[0] * 60000
-        let s = numArray[1] * 1000
-        after = m + s
-        console.log(2);
-    } else if (len === 3) {
-        let h = numArray[0] * 3600000
-        let m = numArray[1] * 60000
-        let s = numArray[2] * 1000
-        after = h + m + s
-        console.log(3);
-    } else {
-        console.log('无效');
-        return
+    const time = str_to_millseconds(count_down_setting.value)
+    if (time) {
+        timer.add_timer({
+            id: uuidv4(),
+            time: time,
+           
+        })
+
+        return true
     }
-    timers.value.push({
-        time_0: now.value,
-        time: after
-    })
-    console.log(after)
+    return false
 }
+
+
+
 // expose 计时器组件模板语法
 const items = useTemplateRef('items')
 onMounted(() => {
@@ -147,14 +128,10 @@ onMounted(() => {
     // items.value[0].alertt()
 })
 function test() {
-    timers.value.push({
-        id: uuidv4(),
-        time: 5000,
-        count_up: 0,
-        // time_0: now.value
-    })
-}
-function test2() {
-    console.log(activated_refs.value.btn[0].action());
+timer.add_timer({
+    id: uuidv4(),
+    time: 10000,
+    des: '测试',
+})
 }
 </script>
