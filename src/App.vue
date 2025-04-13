@@ -32,7 +32,7 @@
             <template #header>
                 计时列表
             </template>
-            <timer_item v-for="(item, index) in timers" ref="items" :timer="item" :index="index">
+            <timer_item :key="item.id" v-for="(item, index) in timers" ref="items" :timer="item" :index="index">
                 <slot>
                     <ElButton :icon="Delete" type="danger" plain @click="timers.splice(index, 1)"> </ElButton>
                 </slot>

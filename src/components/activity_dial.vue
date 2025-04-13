@@ -2,7 +2,7 @@
     <div class="active-title">
     
     </div>
-    <el-progress class="active-body" type="circle" :percentage="template.progress">
+    <el-progress class="active-body" type="circle" :percentage="template.progress" v-show="active_timer.valuable">
         {{ template.text }}
     </el-progress>
     <div>isdown {{ is_counting_down }}</div>
