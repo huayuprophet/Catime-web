@@ -1,5 +1,5 @@
 <template>
-  <nav_component></nav_component>
+    <nav_component></nav_component>
 
     <div>
         <ElText>
@@ -78,12 +78,22 @@ import activity_dial from './components/activity_dial.vue';
 import { useActiveTimerStore, useTimerStore } from './stores/timerStore';
 import nav_component from './components/nav.vue';
 
-
-
 const timer = useTimerStore()
 const active_timer = useActiveTimerStore()
 const { timers } = timer
-
+onMounted(() => {
+    timer.add_timer({
+        id: '00000000-0000-0000-0000-000000000000',
+        des: '描述',
+        time: 4000,
+        time_0: Date.now(),
+        count_up: false,
+        state_code: 1,
+    })
+    console.log(  timer.timers[0]===timer.timers[0].$this());
+    console.log(timer.timers[0].$this());
+}
+)
 // 快捷设置倒计时
 const count_down_setting = ref('')
 
@@ -106,15 +116,12 @@ function count_down_submit() {
 
 // expose 计时器组件模板语法
 const items = useTemplateRef('items')
-onMounted(() => {
-    console.log(items.value[0]);
-    // items.value[0].alertt()
-})
 function test() {
     timer.add_timer({
         id: uuidv4(),
         time: 10000,
         des: '测试',
+        state_code: 1,
     })
 }
 </script>

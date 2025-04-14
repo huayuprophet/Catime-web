@@ -3,13 +3,7 @@ import { computed, ref } from 'vue'
 import { uuidv4 } from '@/time_function'
 
 export const useTimerStore = defineStore('timer', () => {
-    const timers = ref([{
-        id: '00000000-0000-0000-0000-000000000000',
-        des: '描述',
-        time: 4000,
-        time_0: Date.now(),
-        count_up: false,
-    }])
+    const timers = ref([])
     const now = ref(Date.now())
     // 更新当前时间
     setInterval(() => {
@@ -17,11 +11,14 @@ export const useTimerStore = defineStore('timer', () => {
     }, 150)
     // 添加计时器
     function add_timer(timer) {
-        timers.value.push({
+        let scoped = {
             id: uuidv4(),
             time_0: now.value,
+            $this: function () { return this },
             ...timer
-        })
+        }
+        timers.value.push(scoped)
+        // console.log(scoped);
     }
     // 删除计时器
     function remove(index) {
