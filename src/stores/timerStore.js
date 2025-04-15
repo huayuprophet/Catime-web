@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, reactive } from 'vue'
 import { uuidv4 } from '@/time_function'
 
 export const useTimerStore = defineStore('timer', () => {
@@ -11,13 +11,35 @@ export const useTimerStore = defineStore('timer', () => {
     }, 150)
     // 添加计时器
     function add_timer(timer) {
-        let scoped = {
-            id: uuidv4(),
-            time_0: now.value,
-            $this: function () { return this },
-            ...timer
-        }
+        const scoped = reactive(timer)
+        scoped.id = scoped.id ?? uuidv4()
+        scoped.time_0 = scoped.time_0 ?? now.value
+        scoped.jump = scoped.jump ?? 0
+        scoped.created_at = scoped.created_at ?? now.value
+        scoped.state_code = scoped.state_code ?? 0
+        scoped.count_up = false// 是否为倒计时
+        scoped.tasks = []
+        scoped.timing = computed(() => {
+            return now.value - scoped.time_0 + scoped.jump
+        })
+        scoped.time_1 = computed(() => {
+            return scoped.time_0 + scoped.time
+        })
+        scoped.down = computed(() => {
+            return scoped.time_1 - now.value - scoped.jump
+        })
+        scoped.show = computed(() => {
+            let result = scoped.state_code === 0 ? (scoped.count_up ? scoped.timing : scoped.down) : (scoped.count_up ? scoped.jump : scoped.time - scoped.jump)
+            return result >= 0 ? result : 0
+        })
+        // scoped.$this = scoped
         timers.value.push(scoped)
+        scoped.pause_resume_toggle=function(){
+            if(scoped.state_code===0){
+                
+            }
+            
+        }
         // console.log(scoped);
     }
     // 删除计时器

@@ -32,11 +32,11 @@
             <template #header>
                 计时列表
             </template>
-            <timer_item :key="item.id" v-for="(item, index) in timers" ref="items" :timer="item" :index="index">
+            <!-- <timer_item :key="item.id" v-for="(item, index) in timers" ref="items" :timer="item" :index="index">
                 <slot>
                     <ElButton :icon="Delete" type="danger" plain @click="timers.splice(index, 1)"> </ElButton>
                 </slot>
-            </timer_item>
+            </timer_item> -->
             <!-- <ElEmpty></ElEmpty> -->
         </ElCard>
         <div style="margin-top: 2rem;">
@@ -90,9 +90,27 @@ onMounted(() => {
         count_up: false,
         state_code: 1,
     })
-    console.log(  timer.timers[0]===timer.timers[0].$this());
-    console.log(timer.timers[0].$this());
+    timer.timers[0].func()
+    // console.log(  timer.timers[0]===timer.timers[0].$this());
+    // console.log(timer.timers[0].$this());
+    setInterval(() => {
+        console.log(timer.timers);
+    }, 6000);
+    let obj = {
+        name: 'John',
+        age: 30,
+        city: 'New York',
+        actions: [
+            () => console.log(this), // 箭头函数保持了this的上下文
+        ]
+    };
+    obj.actions['$this']
+    obj.actions[0]();
+    // obj.actions.push(() => console.log(this));
+    console.log(obj.actions);
 }
+
+
 )
 // 快捷设置倒计时
 const count_down_setting = ref('')

@@ -113,7 +113,7 @@ const { now } = storeToRefs(timerStore)
 // 导入已激活的timer方法集
 const props = defineProps(['timer', 'index'])
 // 导入或生成原始id
-props.timer.id = props.timer.id ? props.timer.id : uuidv4()
+// props.timer.id = props.timer.id ? props.timer.id : uuidv4()
 // 检查激活状态
 // 导入激活项store
 const active_timer = useActiveTimerStore()
@@ -121,14 +121,23 @@ const is_activated = computed(() => {
     return active_timer.id === props.timer.id
 })
 // 导入状态、声明函数
-props.timer.state_code = props.timer.state_code ? props.timer.state_code : 0
+// props.timer.state_code = props.timer.state_code ? props.timer.state_code : 0
 // 暂停、结束状态
-const is_pause = ref(props.timer.state_code == 1)
-const is_stop = ref(props.timer.state_code == 3)
+// const is_pause = ref(props.timer.state_code == 1)
+const is_pause = computed(() => {
+    return props.timer.state_code == 1
+})
+// const is_timeout = computed(() => {
+//     return props.timer.state_code == 2
+// })
+// const is_stop = ref(props.timer.state_code == 3)
+const is_stop = computed(() => {
+    return props.timer.state_code == 3
+})
 // 计时器开始时间 默认为当前时间
-props.timer.time_0 = props.timer.time_0 ? props.timer.time_0 : now.value
+// props.timer.time_0 = props.timer.time_0 ? props.timer.time_0 : now.value
 // 导入倒计时总时间 适合展示的倒计时总时间
-props.timer.time = props.timer.time ? props.timer.time : 0
+// props.timer.time = props.timer.time ? props.timer.time : 0
 const time_show = computed(() => {
     return ms_to_time(props.timer.time)
 })
@@ -175,11 +184,17 @@ const timer_show = computed(() => {
     if (is_pause.value) {
         return ms_to_time(
             props.timer.count_up ? props.timer.jump : props.timer.time - props.timer.jump
+
         )
     }
     if (is_stop.value) {
         return '已停止'
     }
+    // //0 计时
+    // state_code === 0 ? (count_up ? timing : down) : (count_up ? jump : time - jump)
+    // // 暂停
+    // count_up ? jump : time - jump
+
     // 正计时显示正计时的时间
     if (props.timer.count_up) {
         return ms_to_time(timing.value)
@@ -205,6 +220,8 @@ const is_timeout = computed(() => {
         return true
     }
 })
+
+
 // 状态文本
 const state_show = computed(() => {
     // let counting_state = props.timer.count_up ? '正计时中' : '倒计时中'
@@ -258,7 +275,8 @@ onMounted(() => {
 })
 // 暂停倒计时
 function count_down_pause() {
-    is_pause.value = true
+    props.timer.state_code = 1
+    // is_pause.value = true
     props.timer.jump = timing.value
 }
 // 继续倒计时
