@@ -88,7 +88,7 @@ onMounted(() => {
         time: 4000,
         time_0: Date.now(),
         count_up: false,
-        state_code: 1,
+        state_code: 0
     })
     // timer.timers[0].func()
     // console.log(  timer.timers[0]===timer.timers[0].$this());

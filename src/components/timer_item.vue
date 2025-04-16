@@ -75,22 +75,18 @@
         <ElDivider></ElDivider>
     </div>
 </template>
-
 <style scoped>
 .info-item {
     margin-bottom: 16px;
 }
-
 .label {
     font-weight: bold;
     color: #606266;
     margin-bottom: 4px;
 }
-
 .value {
     color: #303133;
 }
-
 @media (max-width: 768px) {
     .info-item {
         margin-bottom: 12px;

@@ -17,7 +17,7 @@ export const useTimerStore = defineStore('timer', () => {
         scoped.jump = scoped.jump || 0
         scoped.created_at = scoped.created_at || now.value
         scoped.state_code = scoped.state_code || 0
-        scoped.count_up = false// 是否为倒计时
+        scoped.count_up = false
         scoped.tasks = []
         scoped.timing = computed(() => {
             return now.value - scoped.time_0// + scoped.jump
@@ -32,38 +32,65 @@ export const useTimerStore = defineStore('timer', () => {
             const result = scoped.state_code === 0 ? (scoped.count_up ? scoped.timing : scoped.down) : (scoped.count_up ? scoped.jump : scoped.time - scoped.jump)
             return result >= 0 ? result : 0
         })
-        // console.log(scoped.timing);
 
-        // scoped.$this = scoped
         timers.value.push(scoped)
-        scoped.pause_resume_toggle = () => {
-            if (scoped.state_code === 0) {
-                scoped.jump = scoped.timing
-                scoped.state_code = 1
-                return true
-            }
-            else if (scoped.state_code === 1) {
-                scoped.time_0 = now.value - scoped.jump
-                scoped.state_code = 0
-                scoped.jump = 0
-                return true
-            }
-            else { return false }
+    }
+    // 暂停/恢复计时器
+    function pause_resume_toggle(index) {
+        if (timers.value[index].state_code === 0) {
+            timers.value[index].jump = timers.value[index].timing
+            timers.value[index].state_code = 1
+            return true
         }
-        // console.log(scoped);
+        else if (timers.value[index].state_code === 1) {
+            timers.value[index].time_0 = now.value - timers.value[index].jump
+            timers.value[index].state_code = 0
+            timers.value[index].jump = 0
+            return true
+        }
+        else { return false }
+    }
+    // 停止计时器
+    function stop(index) {
+        timers.value[index].jump = timers.value[index].timing
+        timers.value[index].state_code = 3
+    }
+    // 设置计时器属性
+    function set(index, obj) {
+        for (const key in obj) {
+            timers.value[index][key] = obj[key]
+        }
+    }
+    // 重启计时器
+    function restart(index) {
+        set(index, {
+            time_0: now.value,
+            jump: 0,
+            state_code: 0
+        })
     }
     // 删除计时器
     function remove(index) {
         timers.value.splice(index, 1)
     }
-    // 清空计时器
+    // 清空全部计时器
     function clear() {
         timers.value = [];
     }
+    // 获取计时器
+    function get_timer(id) {
+        return timers.value.find(timer => timer.id === id)
+    }
+
     return {
         timers,
         now,
         add_timer,
+        get_timer,
+        pause_resume_toggle,
+        stop,
+        set,
+        restart,
         remove,
         clear
     }
