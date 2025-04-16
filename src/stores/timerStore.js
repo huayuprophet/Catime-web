@@ -16,7 +16,7 @@ export const useTimerStore = defineStore('timer', () => {
         scoped.time_0 = scoped.time_0 || now.value
         scoped.jump = scoped.jump || 0
         scoped.created_at = scoped.created_at || now.value
-        scoped.state_code = scoped.state_code || 0
+        scoped.state_code = scoped.state_code || 0 // 0: 运行中, 1: 暂停, 2: 结束/过期, 3: 停止，4: 已执行任务/跳过任务
         scoped.count_up = false
         scoped.tasks = []
         scoped.timing = computed(() => {
@@ -81,18 +81,36 @@ export const useTimerStore = defineStore('timer', () => {
     function get_timer(id) {
         return timers.value.find(timer => timer.id === id)
     }
+    // 获取计时器索引
+    function get_index(id) {
+        return timers.value.findIndex(timer => timer.id === id)
+    }
+    // 跳至最后但依然执行结束时的任务
+    function jumpend(index) {
+        const timer = timers.value[index];
+        if (timer.state_code === 0 || timer.state_code === 1) {
+            timer.jump = timer.time; // 跳至结束
+            timer.state_code = 2; // 标记为结束状态
+            // 在这里可以添加结束时应触发的任务
+            // 例如：timer.tasks.forEach(task => task());
+            return true;
+        }
+        return false;
+    }
 
     return {
         timers,
         now,
         add_timer,
         get_timer,
+        get_index,
         pause_resume_toggle,
         stop,
         set,
         restart,
         remove,
-        clear
+        clear,
+        jumpend // 导出 jumpend 方法
     }
 })
 export const useActiveTimerStore = defineStore('activeTimer', () => {
