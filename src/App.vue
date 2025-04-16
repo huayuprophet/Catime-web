@@ -90,7 +90,7 @@ onMounted(() => {
         count_up: false,
         state_code: 1,
     })
-    timer.timers[0].func()
+    // timer.timers[0].func()
     // console.log(  timer.timers[0]===timer.timers[0].$this());
     // console.log(timer.timers[0].$this());
     setInterval(() => {
@@ -104,8 +104,8 @@ onMounted(() => {
             () => console.log(this), // 箭头函数保持了this的上下文
         ]
     };
-    obj.actions['$this']
-    obj.actions[0]();
+    // obj.actions['$this']
+    // obj.actions[0]();
     // obj.actions.push(() => console.log(this));
     console.log(obj.actions);
 }

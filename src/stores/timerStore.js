@@ -12,33 +12,43 @@ export const useTimerStore = defineStore('timer', () => {
     // 添加计时器
     function add_timer(timer) {
         const scoped = reactive(timer)
-        scoped.id = scoped.id ?? uuidv4()
-        scoped.time_0 = scoped.time_0 ?? now.value
-        scoped.jump = scoped.jump ?? 0
-        scoped.created_at = scoped.created_at ?? now.value
-        scoped.state_code = scoped.state_code ?? 0
+        scoped.id = scoped.id || uuidv4()
+        scoped.time_0 = scoped.time_0 || now.value
+        scoped.jump = scoped.jump || 0
+        scoped.created_at = scoped.created_at || now.value
+        scoped.state_code = scoped.state_code || 0
         scoped.count_up = false// 是否为倒计时
         scoped.tasks = []
         scoped.timing = computed(() => {
-            return now.value - scoped.time_0 + scoped.jump
+            return now.value - scoped.time_0// + scoped.jump
         })
         scoped.time_1 = computed(() => {
             return scoped.time_0 + scoped.time
         })
         scoped.down = computed(() => {
-            return scoped.time_1 - now.value - scoped.jump
+            return scoped.time_1 - now.value// - scoped.jump
         })
         scoped.show = computed(() => {
-            let result = scoped.state_code === 0 ? (scoped.count_up ? scoped.timing : scoped.down) : (scoped.count_up ? scoped.jump : scoped.time - scoped.jump)
+            const result = scoped.state_code === 0 ? (scoped.count_up ? scoped.timing : scoped.down) : (scoped.count_up ? scoped.jump : scoped.time - scoped.jump)
             return result >= 0 ? result : 0
         })
+        // console.log(scoped.timing);
+
         // scoped.$this = scoped
         timers.value.push(scoped)
-        scoped.pause_resume_toggle=function(){
-            if(scoped.state_code===0){
-                
+        scoped.pause_resume_toggle = () => {
+            if (scoped.state_code === 0) {
+                scoped.jump = scoped.timing
+                scoped.state_code = 1
+                return true
             }
-            
+            else if (scoped.state_code === 1) {
+                scoped.time_0 = now.value - scoped.jump
+                scoped.state_code = 0
+                scoped.jump = 0
+                return true
+            }
+            else { return false }
         }
         // console.log(scoped);
     }
