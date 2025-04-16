@@ -5,15 +5,27 @@ import { uuidv4 } from '@/time_function'
 export const useTimerStore = defineStore('timer', () => {
     const timers = ref([])
     const now = ref(Date.now())
-    // 更新当前时间
+
+    // 更新当前时间并检查超时
     setInterval(() => {
         now.value = Date.now()
+        // 检查所有计时器的超时状态
+        timers.value.forEach(timer => {
+            if (timer.state_code === 0 && timer.down <= 0) {
+                timer.state_code = 2; // 标记为超时状态
+                // timer.tasks.forEach(task => task()); // 执行所有任务
+            }
+        })
     }, 150)
+
     // 添加计时器
     function add_timer(timer) {
         const scoped = reactive(timer)
         scoped.id = scoped.id || uuidv4()
+        scoped.des = scoped.des || ''
         scoped.time_0 = scoped.time_0 || now.value
+        scoped.time = scoped.time || 0
+        // scoped.remark = scoped.remark || ''
         scoped.jump = scoped.jump || 0
         scoped.created_at = scoped.created_at || now.value
         scoped.state_code = scoped.state_code || 0 // 0: 运行中, 1: 暂停, 2: 结束/过期, 3: 停止，4: 已执行任务/跳过任务

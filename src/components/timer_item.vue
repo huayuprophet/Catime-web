@@ -79,14 +79,17 @@
 .info-item {
     margin-bottom: 16px;
 }
+
 .label {
     font-weight: bold;
     color: #606266;
     margin-bottom: 4px;
 }
+
 .value {
     color: #303133;
 }
+
 @media (max-width: 768px) {
     .info-item {
         margin-bottom: 12px;
@@ -104,46 +107,28 @@ const timerStore = useTimerStore();
 // 实时时间-毫秒级时间戳
 const { now } = storeToRefs(timerStore)
 // 导入组件计时项目对象-props
-// 导入对象索引 index与创建的timers值索引一致、不保证与模板语法ref索引一致
+// 导入对象索引 index与创建的timers值索引一致、不保证与模板引用的ref索引一致
 // 导入已激活的timer对象索引
-// 导入已激活的timer方法集
 const props = defineProps(['timer', 'index'])
-// 导入或生成原始id
-// props.timer.id = props.timer.id ? props.timer.id : uuidv4()
+const { timer } = props
+
+
 // 检查激活状态
 // 导入激活项store
 const active_timer = useActiveTimerStore()
 const is_activated = computed(() => {
     return active_timer.id === props.timer.id
 })
-// 导入状态、声明函数
-// props.timer.state_code = props.timer.state_code ? props.timer.state_code : 0
+
 // 暂停、结束状态
 // const is_pause = ref(props.timer.state_code == 1)
 const is_pause = computed(() => {
     return props.timer.state_code == 1
 })
-// const is_timeout = computed(() => {
-//     return props.timer.state_code == 2
-// })
-// const is_stop = ref(props.timer.state_code == 3)
 const is_stop = computed(() => {
     return props.timer.state_code == 3
 })
-// 计时器开始时间 默认为当前时间
-// props.timer.time_0 = props.timer.time_0 ? props.timer.time_0 : now.value
-// 导入倒计时总时间 适合展示的倒计时总时间
-// props.timer.time = props.timer.time ? props.timer.time : 0
-const time_show = computed(() => {
-    return ms_to_time(props.timer.time)
-})
-// 以下导入props原对象属性的所有内容
-// 计时器创建时间-默认值为当前时间
-props.timer.created_at = props.timer.created_at ? props.timer.created_at : now.value
-// 适合展示的创建时间
-const created_at_show = computed(() => {
-    return timestamp_to_datetime(props.timer.created_at)
-})
+
 // 计时器描述
 props.timer.des = props.timer.des ? props.timer.des : '66';
 // 缓存的需跳过时间-暂停继续时使用 默认为0毫秒
