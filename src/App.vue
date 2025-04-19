@@ -16,7 +16,7 @@
             测试创建一个预制参数的timer
         </ElButton>
         <ElButton>
-            测试使用子组件模板语法expose的方法实现群控
+            测试群控
         </ElButton>
         <ElButton>
             模拟timeout以测试触发结束事件
@@ -24,7 +24,10 @@
     </div>
     <div>置顶激活(此处使用超大的字): </div>
     <div>
-        <activity_dial></activity_dial>
+        <activity_dial v-if="active_timer.valuable"></activity_dial>
+        <div style="font-size: 3rem;">
+
+        </div>
     </div>
     <ElConfigProvider :locale="zhCn">
         <ElDivider></ElDivider>
@@ -85,31 +88,14 @@ onMounted(() => {
         count_up: false,
         state_code: 0
     })
-    // timer.timers[0].func()
-    // console.log(  timer.timers[0]===timer.timers[0].$this());
-    // console.log(timer.timers[0].$this());
     setInterval(() => {
         console.log(timer.timers);
     }, 6000);
-    let obj = {
-        name: 'John',
-        age: 30,
-        city: 'New York',
-        actions: [
-            () => console.log(this), // 箭头函数保持了this的上下文
-        ]
-    };
-    // obj.actions['$this']
-    // obj.actions[0]();
-    // obj.actions.push(() => console.log(this));
-    console.log(obj.actions);
+
 }
-
-
 )
 // 快捷设置倒计时
 const count_down_setting = ref('')
-
 // 新增timer
 function count_down_submit() {
     const time = str_to_millseconds(count_down_setting.value)
@@ -117,18 +103,13 @@ function count_down_submit() {
         timer.add_timer({
             id: uuidv4(),
             time: time,
-
         })
-
         return true
     }
     return false
 }
 
 
-
-// expose 计时器组件模板语法
-const items = useTemplateRef('items')
 function test() {
     timer.add_timer({
         id: uuidv4(),

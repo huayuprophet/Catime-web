@@ -48,20 +48,33 @@ export const useTimerStore = defineStore('timer', () => {
 
         timers.value.push(scoped)
     }
-    // 暂停/恢复计时器
+    // 暂停计时器
+    function pause(timer) {
+        if (timer.state_code === 0) {
+            timer.jump = timer.timing;
+            timer.state_code = 1;
+            return true;
+        }
+        return false;
+    }
+    // 恢复计时器
+    function resume(timer) {
+        if (timer.state_code === 1) {
+            timer.time_0 = now.value - timer.jump;
+            timer.state_code = 0;
+            timer.jump = 0;
+            return true;
+        }
+        return false;
+    }
+    // 暂停/恢复计时器切换
     function pause_resume_toggle(timer) {
         if (timer.state_code === 0) {
-            timer.jump = timer.timing
-            timer.state_code = 1
-            return true
+            return pause(timer);
+        } else if (timer.state_code === 1) {
+            return resume(timer);
         }
-        else if (timer.state_code === 1) {
-            timer.time_0 = now.value - timer.jump
-            timer.state_code = 0
-            timer.jump = 0
-            return true
-        }
-        else { return false }
+        return false;
     }
     // 停止计时器
     function stop(timer) {
@@ -76,7 +89,7 @@ export const useTimerStore = defineStore('timer', () => {
             time_0: now.value,
             ...obj
         }
-        for (const key in obj) {
+        for (const key in submit) {
             timer[key] = obj[key]
         }
     }
@@ -135,14 +148,17 @@ export const useTimerStore = defineStore('timer', () => {
     persist: true
 })
 export const useActiveTimerStore = defineStore('activeTimer', () => {
-    const timer = useTimerStore()
+    const timers = useTimerStore()
+    const timer = computed(() => {
+        return timers.get_timer(id.value)
+    })
     // const index = ref(0)
     const id = ref('00000000-0000-0000-0000-000000000000')
     // setInterval(() => {
     //     console.log(timer.timers[index.value]);
     // }, 2000)
     const valuable = computed(() => {
-        const the_timer = timer.get_timer(id.value)
+        const the_timer = timers.get_timer(id.value)
         return the_timer ? true : false
     })
     // function set_active(timer_id) {
@@ -157,6 +173,7 @@ export const useActiveTimerStore = defineStore('activeTimer', () => {
         id,
         valuable,
         template,
+        timer,
         // set_active
     }
 })

@@ -77,7 +77,7 @@
             </ElCol>
         </ElRow>
         <!-- 进度条 -->
-        <el-progress class="progress" :percentage="progress" :show-text="false" :stroke-width="4"/>
+        <el-progress class="progress" :percentage="progress" :show-text="false" :stroke-width="4" />
         <ElDivider></ElDivider>
     </div>
 </template>
@@ -140,11 +140,14 @@ const progress_value = computed(() => {
     return timer.count_up ? 0.5 : timer.show / timer.time;
 })
 // 进度条
-const progress = ref(100)
-setInterval(() => {
-    progress.value = progress_value.value * 100
-    console.log(timer.show);
-}, 150);
+// const progress = ref(100)
+const progress = computed(() => {
+    return progress_value.value * 100
+})
+// setInterval(() => {
+//     progress.value = progress_value.value * 100
+//     console.log(timer.show);
+// }, 150);
 
 // 状态文本
 const state_show = computed(() => {
