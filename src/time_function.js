@@ -8,6 +8,10 @@ export function timestamp_to_time(milliseconds) {
     return `${hours}:${minutes}:${seconds}`;
 }
 export function ms_to_time(milliseconds) {
+    // 如果输入无效，返回00:00:00
+    if (isNaN(milliseconds)) {
+        return '00:00:00';
+    }
     // 计算总秒数
     let totalSeconds = Math.floor(milliseconds / 1000);
     // 计算小时数

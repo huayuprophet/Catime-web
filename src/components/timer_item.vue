@@ -5,7 +5,8 @@
             <ElCol :xs="24" :sm="12" :md="8" :lg="6" :xl="4">
                 <div class="info-item">
                     <div class="label">描述</div>
-                    <div class="value">{{ timer.des }}</div>
+                    <ElInput v-model="timer.des" style="max-width: 240px;">
+                    </ElInput>
                 </div>
             </ElCol>
             <!-- 倒计时/正计时 -->
@@ -13,7 +14,7 @@
                 <div class="info-item">
                     <div class="label" v-if="!timer.count_up">倒计时</div>
                     <div class="label" v-if="timer.count_up">正计时</div>
-                    <div class="value">{{ timer.show }}<span v-if="!timer.count_up">/{{ timer.time }}</span></div>
+                    <div class="value">{{ show }}<span v-if="!timer.count_up">/{{ time_show }}</span></div>
                 </div>
             </ElCol>
             <!-- 状态 -->
@@ -29,7 +30,7 @@
             <ElCol :xs="24" :sm="12" :md="8" :lg="6" :xl="4">
                 <div class="info-item">
                     <div class="label">创建时间</div>
-                    <div class="value">{{ timer.created_at }}</div>
+                    <div class="value">{{ created_at_show }}</div>
                 </div>
             </ElCol>
             <!-- 操作按钮 -->
@@ -44,8 +45,7 @@
                             </ElIcon>
                             {{ is_pause ? '继续' : '暂停' }}
                         </ElButton>
-                        <ElButton @click="active_timer.id = timer.id" :type="is_activated ? 'success' : 'default'"
-                            plain>
+                        <ElButton @click="active" :type="is_activated ? 'success' : 'default'" plain>
                             <el-icon v-show="!is_activated">
                                 <Star />
                             </el-icon>
@@ -144,10 +144,18 @@ const progress_value = computed(() => {
 const progress = computed(() => {
     return progress_value.value * 100
 })
-// setInterval(() => {
-//     progress.value = progress_value.value * 100
-//     console.log(timer.show);
-// }, 150);
+// 格式化创建时间
+const created_at_show = computed(() => {
+    return timestamp_to_datetime(timer.created_at)
+})
+// 格式化显示倒计时时间
+const time_show = computed(() => {
+    return ms_to_time(timer.time)
+})
+// 格式化显示剩余时间
+const show = computed(() => {
+    return ms_to_time(timer.show)
+})
 
 // 状态文本
 const state_show = computed(() => {
@@ -177,12 +185,7 @@ const state_type = computed(() => {
     }
     return 'primary'
 })
-
-
-// // 手动跳过 注意继续执行业务
-// function skip() {
-//     timer.jump = timer.time
-//     timer.time_0 = now.value
-// }
-// defineExpose({})
+function active() {
+    active_timer.id = timer.id
+}
 </script>

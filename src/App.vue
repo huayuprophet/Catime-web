@@ -24,7 +24,7 @@
     </div>
     <div>置顶激活(此处使用超大的字): </div>
     <div>
-        <activity_dial v-if="active_timer.valuable"></activity_dial>
+        <activity_dial></activity_dial>
         <div style="font-size: 3rem;">
 
         </div>
@@ -35,6 +35,24 @@
             <template #header>
                 计时列表
             </template>
+            <ElSpace>
+                <ElText>
+                    群控
+                </ElText>
+                <ElButtonGroup>
+                    <!-- 全部暂停 -->
+                    <ElButton @click="timer.group_control(timer.timers, timer.pause)">
+                        all pause
+                    </ElButton>
+                    <!-- 全部继续 -->
+                    <ElButton @click="timer.group_control(timer.timers, timer.resume)">
+                        all resume 
+                    </ElButton>
+                </ElButtonGroup>
+            </ElSpace>
+
+            <ElDivider>
+            </ElDivider>
             <timer_item :key="item.id" v-for="(item, index) in timers" ref="items" :timer="item" :index="index">
             </timer_item>
             <!-- <ElEmpty></ElEmpty> -->
@@ -79,21 +97,19 @@ import nav_component from './components/nav.vue';
 const timer = useTimerStore()
 const active_timer = useActiveTimerStore()
 const { timers } = timer
-onMounted(() => {
-    timer.add_timer({
-        // id: '00000000-0000-0000-0000-000000000000',
-        des: '描述',
-        time: 4000,
-        time_0: Date.now(),
-        count_up: false,
-        state_code: 0
-    })
-    setInterval(() => {
-        console.log(timer.timers);
-    }, 6000);
-
-}
-)
+// onMounted(() => {
+//     timer.add_timer({
+//         // id: '00000000-0000-0000-0000-000000000000',
+//         des: '描述',
+//         time: 4000,
+//         time_0: Date.now(),
+//         count_up: false,
+//         state_code: 0
+//     })
+//     setInterval(() => {
+//         console.log(timer.timers);
+//     }, 6000);
+// })
 // 快捷设置倒计时
 const count_down_setting = ref('')
 // 新增timer
@@ -108,7 +124,6 @@ function count_down_submit() {
     }
     return false
 }
-
 
 function test() {
     timer.add_timer({

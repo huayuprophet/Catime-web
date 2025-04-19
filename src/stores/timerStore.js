@@ -29,12 +29,23 @@ export const useTimerStore = defineStore('timer', () => {
         scoped.state_code = scoped.state_code || 0 // 0: 运行中, 1: 暂停, 2: 结束/过期, 3: 停止，4: 已执行任务/跳过任务
         scoped.count_up = false
         scoped.tasks = []
+        bind_computed(scoped)
+
+        timers.value.push(scoped)
+    }
+    // 绑定计算属性
+    function bind_computed(scoped) {
+        // 计算属性：
+        // const scoped = timer;
+        // timing 是计时器的运行时间
         scoped.timing = computed(() => {
             return now.value - scoped.time_0// + scoped.jump
         })
+        // time_1 是计时器的结束时间
         scoped.time_1 = computed(() => {
             return scoped.time_0 + scoped.time
         })
+        // down 是计时器的剩余时间
         scoped.down = computed(() => {
             return scoped.time_1 - now.value// - scoped.jump
         })
@@ -46,7 +57,6 @@ export const useTimerStore = defineStore('timer', () => {
             return result >= 0 ? result : 0
         })
 
-        timers.value.push(scoped)
     }
     // 暂停计时器
     function pause(timer) {
@@ -130,6 +140,15 @@ export const useTimerStore = defineStore('timer', () => {
         }
         return false;
     }
+    // 群控
+    function group_control(timers, func, ...args) {
+        timers.forEach(timer => {
+            func(timer, ...args)
+        })
+    }
+    // 接下来帮我示例遍历js对象的实现
+    // 遍历js对象的实现
+
     return {
         timers,
         now,
@@ -137,43 +156,48 @@ export const useTimerStore = defineStore('timer', () => {
         get_timer,
         get_index,
         pause_resume_toggle,
+        pause,
+        resume,
         stop,
         set,
         restart,
         remove,
         clear,
-        jumpend // 导出 jumpend 方法
+        jumpend,
+        group_control,
+        bind_computed,
+    }
+}, {
+    persist: {
+        beforeHydrate: (ctx) => {
+        },
+        afterHydrate: (ctx) => {
+            // 重置所有计时器的计算属性，防止在持久化后出现问题
+            const timer = useTimerStore()
+            timer.timers.forEach(scoped => {
+
+                timer.bind_computed(scoped)
+            })
+        }
+    },
+
+
+})
+export const useActiveTimerStore = defineStore('activeTimer', () => {
+    const id = ref('00000000-0000-0000-0000-000000000000')
+    // const timers = useTimerStore()
+    // const timer = computed(() => {
+    //     return timers.get_timer(id.value)
+    // })
+    // const valuable = computed(() => {
+    //     let the_timer = timers.get_timer(id.value)
+    //     return the_timer ? true : false
+    // })
+    return {
+        id,
+        // valuable,
+        // timer,
     }
 }, {
     persist: true
-})
-export const useActiveTimerStore = defineStore('activeTimer', () => {
-    const timers = useTimerStore()
-    const timer = computed(() => {
-        return timers.get_timer(id.value)
-    })
-    // const index = ref(0)
-    const id = ref('00000000-0000-0000-0000-000000000000')
-    // setInterval(() => {
-    //     console.log(timer.timers[index.value]);
-    // }, 2000)
-    const valuable = computed(() => {
-        const the_timer = timers.get_timer(id.value)
-        return the_timer ? true : false
-    })
-    // function set_active(timer_id) {
-    //     id.value = timer_id
-    // }
-    const template = ref({
-        // text, state, type, progress, btn: [{
-        //     label,type,action
-        // }]
-    })
-    return {
-        id,
-        valuable,
-        template,
-        timer,
-        // set_active
-    }
 })
