@@ -78,7 +78,7 @@ const active_timer = useActiveTimerStore()
 const { timers } = timer
 onMounted(() => {
     timer.add_timer({
-        id: '00000000-0000-0000-0000-000000000000',
+        // id: '00000000-0000-0000-0000-000000000000',
         des: '描述',
         time: 4000,
         time_0: Date.now(),
