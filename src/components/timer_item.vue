@@ -128,7 +128,11 @@ const is_pause = computed(() => {
 const is_stop = computed(() => {
     return props.timer.state_code == 3
 })
+// 倒计时是否超时
+const is_timeout = computed(() => {
+    return props.timer.state_code == 2 || props.timer.state_code == 4
 
+})
 // 计时器描述
 props.timer.des = props.timer.des ? props.timer.des : '66';
 // 缓存的需跳过时间-暂停继续时使用 默认为0毫秒
@@ -186,21 +190,7 @@ const timer_show = computed(() => {
     // 倒计时时间
     return ms_to_time(down.value)
 })
-// 倒计时是否超时
-const is_timeout = computed(() => {
-    if (props.timer.count_up) {
-        // 忽略正计时超时
-        return false
-    }
-    if (is_pause.value || is_stop.value) {
-        // 忽略暂停、停止期间的超时事项
-        return false
-    }
-    if (down.value <= 0) {
-        // 超时
-        return true
-    }
-})
+
 
 
 // 状态文本
