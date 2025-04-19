@@ -5,7 +5,6 @@ import { uuidv4 } from '@/time_function'
 export const useTimerStore = defineStore('timer', () => {
     const timers = ref([])
     const now = ref(Date.now())
-
     // 更新当前时间并检查超时
     setInterval(() => {
         now.value = Date.now()
@@ -17,7 +16,6 @@ export const useTimerStore = defineStore('timer', () => {
             }
         })
     }, 150)
-
     // 添加计时器
     function add_timer(timer) {
         const scoped = reactive(timer)
@@ -72,6 +70,12 @@ export const useTimerStore = defineStore('timer', () => {
     }
     // 设置计时器属性
     function set(timer, obj) {
+        const submit = {
+            jump: 0,
+            state_code: 0,
+            time_0: now.value,
+            ...obj
+        }
         for (const key in obj) {
             timer[key] = obj[key]
         }
@@ -113,7 +117,6 @@ export const useTimerStore = defineStore('timer', () => {
         }
         return false;
     }
-
     return {
         timers,
         now,
@@ -128,19 +131,19 @@ export const useTimerStore = defineStore('timer', () => {
         clear,
         jumpend // 导出 jumpend 方法
     }
+}, {
+    persist: true
 })
 export const useActiveTimerStore = defineStore('activeTimer', () => {
     const timer = useTimerStore()
     // const index = ref(0)
-    const id = ref('00000000-0000-0000-0000-000000000000.')
+    const id = ref('00000000-0000-0000-0000-000000000000')
     // setInterval(() => {
     //     console.log(timer.timers[index.value]);
     // }, 2000)
     const valuable = computed(() => {
-        // if (timer.timers[index.value] == null) {
-        //     return false
-        // }
-        // return timer.timers[index.value].id === id.value ? true : false
+        const the_timer = timer.get_timer(id.value)
+        return the_timer ? true : false
     })
     // function set_active(timer_id) {
     //     id.value = timer_id
@@ -151,7 +154,6 @@ export const useActiveTimerStore = defineStore('activeTimer', () => {
         // }]
     })
     return {
-        // index,
         id,
         valuable,
         template,

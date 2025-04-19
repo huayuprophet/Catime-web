@@ -33,9 +33,6 @@
                 计时列表
             </template>
             <timer_item :key="item.id" v-for="(item, index) in timers" ref="items" :timer="item" :index="index">
-                <!-- <slot>
-                    <ElButton :icon="Delete" type="danger" plain @click="timers.splice(index, 1)"> </ElButton>
-                </slot> -->
             </timer_item>
             <!-- <ElEmpty></ElEmpty> -->
         </ElCard>
@@ -75,7 +72,6 @@ import { str_to_millseconds, uuidv4 } from './time_function';
 import activity_dial from './components/activity_dial.vue';
 import { useActiveTimerStore, useTimerStore } from './stores/timerStore';
 import nav_component from './components/nav.vue';
-// import { Delete } from '@element-plus/icons-vue';
 
 const timer = useTimerStore()
 const active_timer = useActiveTimerStore()

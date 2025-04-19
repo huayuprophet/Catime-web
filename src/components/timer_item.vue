@@ -66,7 +66,7 @@
                             </ElIcon>
                             停止
                         </ElButton>
-                        <ElButton @click="timerStore.delete_timer(timer)" type="danger" plain>
+                        <ElButton @click="timerStore.remove(timer)" type="danger" plain>
                             <ElIcon>
                                 <Delete></Delete>
                             </ElIcon>
