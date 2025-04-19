@@ -32,11 +32,11 @@
             <template #header>
                 计时列表
             </template>
-            <!-- <timer_item :key="item.id" v-for="(item, index) in timers" ref="items" :timer="item" :index="index">
-                <slot>
+            <timer_item :key="item.id" v-for="(item, index) in timers" ref="items" :timer="item" :index="index">
+                <!-- <slot>
                     <ElButton :icon="Delete" type="danger" plain @click="timers.splice(index, 1)"> </ElButton>
-                </slot>
-            </timer_item> -->
+                </slot> -->
+            </timer_item>
             <!-- <ElEmpty></ElEmpty> -->
         </ElCard>
         <div style="margin-top: 2rem;">
@@ -71,12 +71,11 @@
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { ref, onMounted, useTemplateRef } from 'vue';
-import timer_item from './components/timer_item.vue';
-import { Delete } from '@element-plus/icons-vue';
 import { str_to_millseconds, uuidv4 } from './time_function';
 import activity_dial from './components/activity_dial.vue';
 import { useActiveTimerStore, useTimerStore } from './stores/timerStore';
 import nav_component from './components/nav.vue';
+// import { Delete } from '@element-plus/icons-vue';
 
 const timer = useTimerStore()
 const active_timer = useActiveTimerStore()
