@@ -188,21 +188,3 @@ export const useTimerStore = defineStore('timer', () => {
 
 
 })
-export const useActiveTimerStore = defineStore('activeTimer', () => {
-    const id = ref('00000000-0000-0000-0000-000000000000')
-    // const timers = useTimerStore()
-    // const timer = computed(() => {
-    //     return timers.get_timer(id.value)
-    // })
-    // const valuable = computed(() => {
-    //     let the_timer = timers.get_timer(id.value)
-    //     return the_timer ? true : false
-    // })
-    return {
-        id,
-        // valuable,
-        // timer,
-    }
-}, {
-    persist: true
-})

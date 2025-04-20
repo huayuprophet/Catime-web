@@ -13,7 +13,7 @@ let b = []
 function create_task(timer, name = null, func, ...args) {
     timer.tasks.push(
         {
-            type: 0,
+            // type: 0,
             name: name,
             func_name: func,
             args: args,
@@ -80,8 +80,12 @@ const tasks = {
             })
         }
     },
-    open_browser: (url) => {
+    open_browser: (id = false, url) => {
         window.open(url, '_blank');
     },
+    remove: (id) => {
+        const the_timer = timer.get_timer(id)
+        timer.remove(the_timer)
+    }
 
 }

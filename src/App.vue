@@ -10,7 +10,7 @@
             {{ timer.active }}
         </ElText>
     </div>
-    <div>
+    <div v-show="false">
         <ElButton @click="test">
             测试创建一个预制参数的timer
         </ElButton>
@@ -42,7 +42,19 @@
                     </ElButton>
                     <!-- 全部继续 -->
                     <ElButton @click="timer.group_control(timer.timers, timer.resume)">
-                        all resume 
+                        all resume
+                    </ElButton>
+                    <!-- 全部停止 -->
+                    <ElButton @click="timer.group_control(timer.timers, timer.stop)">
+                        all stop
+                    </ElButton>
+                    <!-- 全部重设 -->
+                    <ElButton @click="timer.group_control(timer.timers, timer.restart)">
+                        all restart
+                    </ElButton>
+                    <!-- 全部删除 -->
+                    <ElButton @click="timer.clear">
+                        all delete
                     </ElButton>
                 </ElButtonGroup>
             </ElSpace>
@@ -87,12 +99,13 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import { ref } from 'vue';
 import { str_to_millseconds, uuidv4 } from './time_function';
 import activity_dial from './components/activity_dial.vue';
-import {  useTimerStore } from './stores/timerStore';
+import { useTimerStore } from './stores/timerStore';
 import nav_component from './components/nav.vue';
+import { storeToRefs } from 'pinia';
 
 const timer = useTimerStore()
 
-const { timers } = timer
+const { timers } = storeToRefs(timer)
 // 快捷设置倒计时
 const count_down_setting = ref('')
 // 新增timer

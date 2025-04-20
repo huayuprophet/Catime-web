@@ -43,7 +43,7 @@
                                 <VideoPlay v-show="is_pause"></VideoPlay>
                                 <VideoPause v-show="!is_pause"></VideoPause>
                             </ElIcon>
-                            {{ is_pause ? '继续' : '暂停' }}
+                            <!-- {{ is_pause ? '继续' : '暂停' }} -->
                         </ElButton>
                         <ElButton @click="active" :type="is_activated ? 'success' : 'default'" plain>
                             <el-icon v-show="!is_activated">
@@ -52,26 +52,25 @@
                             <el-icon v-show="is_activated">
                                 <StarFilled />
                             </el-icon>
-                            激活
+                            <!-- 激活 -->
                         </ElButton>
                         <ElButton @click="timerStore.restart(timer)" plain>
                             <ElIcon>
                                 <RefreshRight />
                             </ElIcon>
-                            重新开始
+                            <!-- 重启 -->
                         </ElButton>
                         <ElButton @click="timerStore.stop(timer)" type="warning" plain>
                             <ElIcon>
                                 <Close></Close>
                             </ElIcon>
-                            停止
+                            <!-- 停止 -->
                         </ElButton>
                         <ElButton @click="timerStore.remove(timer)" type="danger" plain>
                             <ElIcon>
                                 <Delete></Delete>
                             </ElIcon>
                         </ElButton>
-                        <slot></slot>
                     </ElButtonGroup>
                 </div>
             </ElCol>
@@ -83,7 +82,7 @@
 </template>
 <style scoped>
 .info-item {
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
 }
 
 .label {
@@ -98,21 +97,18 @@
 
 @media (max-width: 768px) {
     .info-item {
-        margin-bottom: 12px;
+        margin-bottom: 0.8rem;
     }
 }
 </style>
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { computed } from 'vue';
 import { VideoPause, VideoPlay, RefreshRight, Close, Star, StarFilled, Delete } from '@element-plus/icons-vue';
-import { ms_to_time, timestamp_to_datetime, uuidv4 } from '@/time_function';
-import { useActiveTimerStore, useTimerStore } from '@/stores/timerStore';
+import { ms_to_time, timestamp_to_datetime } from '@/time_function';
+import { useTimerStore } from '@/stores/timerStore';
 import { storeToRefs } from 'pinia';
 // 导入计时器store
 const timerStore = useTimerStore();
-
-// 实时时间-毫秒级时间戳
-const { now } = storeToRefs(timerStore)
 // 导入组件计时项目对象-props
 // 导入对象索引 index与创建的timers值索引一致、不保证与模板引用的ref索引一致
 // 导入已激活的timer对象索引
