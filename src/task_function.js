@@ -51,11 +51,25 @@ const tasks = {
     },
     tomato: (id, time_work, time_rest, repeat, time_rest_big = time_rest) => {
         const the_timer = timer.get_timer(id)
-        the_timer.step ??= 0;
-        // if (the_timer) {
-        //     create_task(the_timer, tasks.notify, id, '番茄钟', '时间到！')
-        //     create_task(the_timer, tasks.restart, id)
-        // }
+        the_timer.step ??= 1;
+        the_timer.step++;
+        if (the_timer.step % 2 === 0) {
+            timer.set(the_timer, {
+                time: time_work,
+                jump: 0,
+                state_code: 0,
+                timer_0: now.value,
+            })
+        } else {
+            const rest_count = (the_timer.step / 2);
+            timer.set(the_timer, {
+                // 检查是否为大课间，是的话使用大课间时间，否则使用小课间时间           
+                time: (rest_count % repeat) === 0 ? time_rest_big : time_rest,
+                jump: 0,
+                state_code: 0,
+                timer_0: now.value,
+            })
+        }
     },
 
 }

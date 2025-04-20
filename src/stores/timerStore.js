@@ -93,14 +93,17 @@ export const useTimerStore = defineStore('timer', () => {
         timer.state_code = 3
     }
     // 设置计时器属性
-    function set(timer, obj) {
-        const submit = {
-            jump: 0,
-            state_code: 0,
-            time_0: now.value,
-            ...obj
+    function set(timer, obj, ins = false) {
+        // 是否替换关键属性
+        if (ins) {
+            obj = ins ? {
+                jump: 0,
+                state_code: 0,
+                time_0: now.value,
+                ...obj
+            } : obj
         }
-        for (const key in submit) {
+        for (const key in obj) {
             timer[key] = obj[key]
         }
     }
