@@ -10,10 +10,11 @@ function a(str) {
     console.log(str);
 }
 let b = []
-function create_task(timer, func, ...args) {
+function create_task(timer, name = null, func, ...args) {
     timer.tasks.push(
         {
             type: 0,
+            name: name,
             func_name: func,
             args: args,
         }
@@ -49,6 +50,14 @@ const tasks = {
             duration: 0,
         })
     },
+    notify_simple: (id = false) => {
+        const the_timer = timer.get_timer(id)
+        ElNotification({
+            title: the_timer.des,
+            message: '已完成',
+            duration: 0,
+        })
+    },
     tomato: (id, time_work, time_rest, repeat, time_rest_big = time_rest) => {
         const the_timer = timer.get_timer(id)
         the_timer.step ??= 1;
@@ -70,6 +79,9 @@ const tasks = {
                 timer_0: now.value,
             })
         }
+    },
+    open_browser: (url) => {
+        window.open(url, '_blank');
     },
 
 }

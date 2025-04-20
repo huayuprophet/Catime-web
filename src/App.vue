@@ -1,11 +1,11 @@
 <template>
     <nav_component></nav_component>
-    <div>
+    <div v-show="false">
         <ElText>
             {{ timers }}
         </ElText>
     </div>
-    <div>
+    <div v-show="false">
         <ElText>
             {{ timer.active }}
         </ElText>
@@ -24,9 +24,6 @@
     <div>置顶激活(此处使用超大的字): </div>
     <div>
         <activity_dial></activity_dial>
-        <div style="font-size: 3rem;">
-
-        </div>
     </div>
     <ElConfigProvider :locale="zhCn">
         <ElDivider></ElDivider>
@@ -36,7 +33,7 @@
             </template>
             <ElSpace>
                 <ElText>
-                    群控
+                    全部
                 </ElText>
                 <ElButtonGroup>
                     <!-- 全部暂停 -->
@@ -87,28 +84,15 @@
 <script setup>
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import { ref, onMounted, useTemplateRef } from 'vue';
+import { ref } from 'vue';
 import { str_to_millseconds, uuidv4 } from './time_function';
 import activity_dial from './components/activity_dial.vue';
-import { useActiveTimerStore, useTimerStore } from './stores/timerStore';
+import {  useTimerStore } from './stores/timerStore';
 import nav_component from './components/nav.vue';
 
 const timer = useTimerStore()
-// const active_timer = timer.active
+
 const { timers } = timer
-// onMounted(() => {
-//     timer.add_timer({
-//         // id: '00000000-0000-0000-0000-000000000000',
-//         des: '描述',
-//         time: 4000,
-//         time_0: Date.now(),
-//         count_up: false,
-//         state_code: 0
-//     })
-//     setInterval(() => {
-//         console.log(timer.timers);
-//     }, 6000);
-// })
 // 快捷设置倒计时
 const count_down_setting = ref('')
 // 新增timer
@@ -125,6 +109,14 @@ function count_down_submit() {
 }
 
 function test() {
+    timer.add_timer({
+        id: uuidv4(),
+        time: 10000,
+        des: '测试',
+        state_code: 1,
+    })
+}
+function test2() {
     timer.add_timer({
         id: uuidv4(),
         time: 10000,

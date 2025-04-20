@@ -31,8 +31,8 @@ export const useTimerStore = defineStore('timer', () => {
         scoped.count_up = false
         scoped.tasks = []
         bind_computed(scoped)
-
-        timers.value.push(scoped)
+        // timers.value.push(scoped)
+        timers.value.splice(0,0,scoped)
     }
     // 绑定计算属性
     function bind_computed(scoped) {

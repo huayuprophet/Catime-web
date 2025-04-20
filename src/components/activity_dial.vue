@@ -1,27 +1,21 @@
 <template>
-    <div>
-        v-if=true
-    </div>
     <div class="active-title">
 
     </div>
-    <el-progress class="active-body" type="circle" :percentage="progress">
+    <el-progress v-if="valuable" class="active-body" type="circle" :percentage="progress">
         {{ show }}
     </el-progress>
+    <div style="font-size: 3rem;" v-if="!valuable">
+        {{ now_show }}
+    </div>
     <div>
-        <el-text>
-            {{ timer }}
-        </el-text>
     </div>
 </template>
 <script setup>
-import { computed, onMounted } from 'vue';
-import { useActiveTimerStore, useTimerStore } from '@/stores/timerStore'
-import { ms_to_time } from '@/time_function';
-import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useTimerStore } from '@/stores/timerStore'
+import { ms_to_time, timestamp_to_time } from '@/time_function';
 const timers = useTimerStore()
-const active = timers.active
-// const { timer } = storeToRefs(actives)
 const timer = computed(() => {
     const result = timers.get_timer(timers.active)
     if (result) {
@@ -45,8 +39,10 @@ const progress = computed(() => {
         return result
     }
 })
-
 const show = computed(() => {
     return ms_to_time(timer.value.show)
+})
+const now_show = computed(() => {
+    return timestamp_to_time(timers.now)
 })
 </script>
