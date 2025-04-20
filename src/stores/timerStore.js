@@ -5,6 +5,7 @@ import { uuidv4 } from '@/time_function'
 export const useTimerStore = defineStore('timer', () => {
     const timers = ref([])
     const now = ref(Date.now())
+    const active = ref('00000000-0000-0000-0000-000000000000')
     // 更新当前时间并检查超时
     setInterval(() => {
         now.value = Date.now()
@@ -166,6 +167,7 @@ export const useTimerStore = defineStore('timer', () => {
         jumpend,
         group_control,
         bind_computed,
+        active,
     }
 }, {
     persist: {

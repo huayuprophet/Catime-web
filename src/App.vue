@@ -1,6 +1,5 @@
 <template>
     <nav_component></nav_component>
-
     <div>
         <ElText>
             {{ timers }}
@@ -8,7 +7,7 @@
     </div>
     <div>
         <ElText>
-            {{ active_timer }}
+            {{ timer.active }}
         </ElText>
     </div>
     <div>
@@ -95,7 +94,7 @@ import { useActiveTimerStore, useTimerStore } from './stores/timerStore';
 import nav_component from './components/nav.vue';
 
 const timer = useTimerStore()
-const active_timer = useActiveTimerStore()
+// const active_timer = timer.active
 const { timers } = timer
 // onMounted(() => {
 //     timer.add_timer({

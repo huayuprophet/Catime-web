@@ -20,10 +20,10 @@ import { useActiveTimerStore, useTimerStore } from '@/stores/timerStore'
 import { ms_to_time } from '@/time_function';
 import { storeToRefs } from 'pinia';
 const timers = useTimerStore()
-const actives = useActiveTimerStore()
+const active = timers.active
 // const { timer } = storeToRefs(actives)
 const timer = computed(() => {
-    const result = timers.get_timer(actives.id)
+    const result = timers.get_timer(timers.active)
     if (result) {
         return result
     }

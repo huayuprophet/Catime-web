@@ -121,9 +121,9 @@ const props = defineProps(['timer', 'index'])
 const { timer } = props
 // 检查激活状态
 // 导入激活项store
-const active_timer = useActiveTimerStore()
+// const active_timer = timerStore.active
 const is_activated = computed(() => {
-    return active_timer.id === timer.id
+    return timerStore.active === timer.id
 })
 // 暂停、结束状态
 const is_pause = computed(() => {
@@ -186,6 +186,6 @@ const state_type = computed(() => {
     return 'primary'
 })
 function active() {
-    active_timer.id = timer.id
+    timerStore.active = timer.id
 }
 </script>

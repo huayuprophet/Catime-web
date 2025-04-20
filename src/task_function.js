@@ -51,7 +51,7 @@ const tasks = {
     },
     tomato: (id, time_work, time_rest, repeat, time_rest_big = time_rest) => {
         const the_timer = timer.get_timer(id)
-        
+        the_timer.step ??= 0;
         // if (the_timer) {
         //     create_task(the_timer, tasks.notify, id, '番茄钟', '时间到！')
         //     create_task(the_timer, tasks.restart, id)
