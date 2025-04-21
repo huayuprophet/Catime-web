@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="down creater">
     <!-- 倒计时添加： -->
     <ElForm @submit.prevent="count_down_submit" style="max-width: 480px;">
       <ElFormItem>
@@ -23,6 +23,28 @@
       </ElText>
     </div>
   </div>
+  <div class="tomato creater" v-show="false">
+    <!-- 番茄钟添加： -->
+    <ElForm>
+      <ElFormItem label="专注时间">
+        <ElInput v-model="tomato_setting.time">
+        </ElInput>
+      </ElFormItem>
+      <ElFormItem label="休息时间">
+        <ElInput v-model="tomato_setting.time">
+        </ElInput>
+      </ElFormItem>
+      <ElFormItem label="休息时间">
+        <ElInput v-model="tomato_setting.time">
+        </ElInput>
+      </ElFormItem>
+    </ElForm>
+    <div>{{ tomato_setting.time }}</div>
+  </div>
+  <div class="task creater">
+    <!-- 任务添加： -->
+
+  </div>
 </template>
 
 <script setup>
@@ -32,7 +54,6 @@ import { useTimerStore } from '../stores/timerStore';
 
 const timer = useTimerStore();
 const count_down_setting = ref('');
-
 // 新增timer
 function count_down_submit() {
   const time = str_to_millseconds(count_down_setting.value);
@@ -45,15 +66,25 @@ function count_down_submit() {
   }
   return false;
 }
-
 // 清空并创建
 function clear_and_create() {
   timer.clear();
   count_down_submit();
 }
-
 // 取消
 function cancel() {
   count_down_setting.value = '';
 }
+const tomato_setting = ref({
+  time: 25,
+  short_break: 5,
+  long_break: 15,
+  repeat: 4,
+});
+// 新增timer
+function tomato_submit() {
+
+}
+
+
 </script>
