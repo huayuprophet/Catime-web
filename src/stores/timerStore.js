@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref, reactive } from 'vue'
 import { uuidv4 } from '@/time_function'
+import { tasks } from '@/task_function'
 
 export const useTimerStore = defineStore('timer', () => {
     const timers = ref([])
@@ -13,7 +14,9 @@ export const useTimerStore = defineStore('timer', () => {
         timers.value.forEach(timer => {
             if (timer.state_code === 0 && timer.down <= 0) {
                 timer.state_code = 2; // 标记为超时状态
-                // timer.tasks.forEach(task => task()); // 执行所有任务
+                timer.tasks.forEach(task => {
+                    tasks[task.func](task.timer_id || timer.id, ...task.args); // 执行所有任务，如果没有指定 timer_id，则使用当前计时器的 id
+                }); // 执行所有任务
             }
         })
     }, 150)
@@ -32,7 +35,7 @@ export const useTimerStore = defineStore('timer', () => {
         scoped.tasks = []
         bind_computed(scoped)
         // timers.value.push(scoped)
-        timers.value.splice(0,0,scoped)
+        timers.value.splice(0, 0, scoped)
     }
     // 绑定计算属性
     function bind_computed(scoped) {

@@ -11,6 +11,7 @@ let b = []
 function create_task(timer, name = null, func, ...args) {
     timer.tasks.push(
         {
+            // timer_id : xxx, // 计时器id，默认为当前计时器id
             // type: 0,
             name: name,
             func_name: func,
@@ -19,7 +20,7 @@ function create_task(timer, name = null, func, ...args) {
     )
 }
 
-const tasks = {
+export const tasks = {
     restart: (id) => {
         const the_timer = timer.get_timer(id)
         if (the_timer) {
@@ -84,6 +85,16 @@ const tasks = {
     remove: (id) => {
         const the_timer = timer.get_timer(id)
         timer.remove(the_timer)
+    },
+    turn_up: (id) => {
+        const the_timer = timer.get_timer(id)
+        timer.set(the_timer, {
+            time_0: now.value,
+            jump: 0,
+            count_up: true,
+            time: 0,
+            state_code: 0,
+        })
     }
 
 }
