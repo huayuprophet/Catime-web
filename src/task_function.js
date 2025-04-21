@@ -1,7 +1,8 @@
 import { useTimerStore } from "./stores/timerStore";
 import { ElNotification } from "element-plus";
 
-var timer
+let timer
+// timer = useTimerStore();
 function create_task(timer, name = null, func, ...args) {
     timer.tasks.push(
         {
@@ -13,6 +14,9 @@ function create_task(timer, name = null, func, ...args) {
         }
     )
 }
+
+// 初始化任务函数
+// 注意：此函数必须在使用任务函数之前调用，不设此逻辑的话，任务函数会报错，因为任务函数需要使用timer对象，而timer对象是在useTimerStore函数中创建的，而tasks相关对象是在useTimerStore函数中调用的，这样就会导致循环引用，导致任务函数无法正常使用。
 export function task_init() {
     timer = useTimerStore();
 }

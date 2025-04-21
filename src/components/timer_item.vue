@@ -54,12 +54,16 @@
                             </el-icon>
                             <!-- 激活 -->
                         </ElButton>
-                        <ElButton @click="timerStore.restart(timer)" plain>
-                            <ElIcon>
-                                <RefreshRight />
-                            </ElIcon>
-                            <!-- 重启 -->
-                        </ElButton>
+                        <!-- 重置 -->
+                        <el-popconfirm title="确定要从头开始吗" @confirm="timerStore.restart(timer)">
+                            <template #reference>
+                                <el-button>
+                                    <ElIcon>
+                                        <RefreshRight />
+                                    </ElIcon>
+                                </el-button>
+                            </template>
+                        </el-popconfirm>
                         <ElButton @click="timerStore.stop(timer)" type="warning" plain>
                             <ElIcon>
                                 <Close></Close>
@@ -107,81 +111,93 @@ import { VideoPause, VideoPlay, RefreshRight, Close, Star, StarFilled, Delete } 
 import { ms_to_time, timestamp_to_datetime } from '@/time_function';
 import { useTimerStore } from '@/stores/timerStore';
 import { storeToRefs } from 'pinia';
+
 // 导入计时器store
 const timerStore = useTimerStore();
+
 // 导入组件计时项目对象-props
 // 导入对象索引 index与创建的timers值索引一致、不保证与模板引用的ref索引一致
 // 导入已激活的timer对象索引
-const props = defineProps(['timer', 'index'])
+const props = defineProps(['timer', 'index']);
+
 // 导入组件计时项目对象并解包
-const { timer } = props
+const { timer } = props;
+
 // 检查激活状态
-// 导入激活项store
-// const active_timer = timerStore.active
 const is_activated = computed(() => {
-    return timerStore.active === timer.id
-})
+    return timerStore.active === timer.id;
+});
+
 // 暂停、结束状态
 const is_pause = computed(() => {
-    return timer.state_code == 1
-})
+    return timer.state_code == 1;
+});
+
 const is_stop = computed(() => {
-    return timer.state_code == 3
-})
+    return timer.state_code == 3;
+});
+
 // 倒计时是否超时、结束
 const is_timeout = computed(() => {
-    return timer.state_code == 2 || timer.state_code == 4
-})
+    return timer.state_code == 2 || timer.state_code == 4;
+});
+
+// 进度条计算值
 const progress_value = computed(() => {
     return timer.count_up ? 0.5 : timer.show / timer.time;
-})
+});
+
 // 进度条
-// const progress = ref(100)
 const progress = computed(() => {
-    return progress_value.value * 100
-})
+    return progress_value.value * 100;
+});
+
 // 格式化创建时间
 const created_at_show = computed(() => {
-    return timestamp_to_datetime(timer.created_at)
-})
+    return timestamp_to_datetime(timer.created_at);
+});
+
 // 格式化显示倒计时时间
 const time_show = computed(() => {
-    return ms_to_time(timer.time)
-})
+    return ms_to_time(timer.time);
+});
+
 // 格式化显示剩余时间
 const show = computed(() => {
-    return ms_to_time(timer.show)
-})
+    return ms_to_time(timer.show);
+});
 
 // 状态文本
 const state_show = computed(() => {
-    // let counting_state = timer.count_up ? '正计时中' : '倒计时中'
-    let counting_state = '计时中'
+    let counting_state = '计时中';
     if (is_stop.value) {
-        return '已停止'
+        return '已停止';
     }
     if (is_pause.value) {
-        return '暂停中'
+        return '暂停中';
     }
     if (is_timeout.value) {
-        return '已结束'
+        return '已结束';
     }
-    return counting_state
-})
+    return counting_state;
+});
+
 // 状态色彩
 const state_type = computed(() => {
     if (is_stop.value) {
-        return 'warning'
+        return 'warning';
     }
     if (is_pause.value) {
-        return 'primary'
+        return 'primary';
     }
     if (is_timeout.value) {
-        return 'info'
+        return 'info';
     }
-    return 'primary'
-})
+    return 'primary';
+});
+
+// 激活当前计时器
 function active() {
-    timerStore.active = timer.id
+    timerStore.active = timer.id;
 }
 </script>
