@@ -1,11 +1,9 @@
 // console.log('Hello, World!');
 import { useTimerStore } from "./stores/timerStore";
-import { useTaskStore } from "./stores/taskStore";
+// import { useTaskStore } from "./stores/taskStore";
 import { ElNotification } from "element-plus";
 
 const timer = useTimerStore();
-const task = useTaskStore();
-
 function a(str) {
     console.log(str);
 }

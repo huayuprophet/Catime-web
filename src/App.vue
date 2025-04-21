@@ -26,7 +26,9 @@
         <activity_dial></activity_dial>
     </div>
     <ElConfigProvider :locale="zhCn">
-        <ElDivider></ElDivider>
+        <div style="margin-bottom: 1rem;">
+            <timer_creater></timer_creater>
+        </div>
         <ElCard>
             <template #header>
                 计时列表
@@ -63,63 +65,24 @@
             </ElDivider>
             <timer_item :key="item.id" v-for="(item, index) in timers" ref="items" :timer="item" :index="index">
             </timer_item>
-            <!-- <ElEmpty></ElEmpty> -->
+            <div v-if="timers.length === 0">
+                <ElEmpty></ElEmpty>
+            </div>
         </ElCard>
-        <div style="margin-top: 2rem;">
-            <div>
-                <ElForm @submit.prevent="count_down_submit" style="max-width: 480px;">
-                    <ElFormItem>
-                        <ElInput v-model="count_down_setting">
-                        </ElInput>
-                    </ElFormItem>
-                    <ElFormItem>
-                        <ElButton @click="count_down_submit">创建</ElButton>
-                        <ElButton>清空并创建</ElButton>
-                        <ElButton>取消</ElButton>
-                    </ElFormItem>
-                </ElForm>
-            </div>
-            <div>
-                <ElText type="info">
-                    示例：<br>
-                    2.6.50 倒计时2小时6分钟50秒。<br>
-                    2.20 倒计时2分钟20秒<br>
-                    .40 倒计时40秒<br>
-                    6 倒计时6分钟。<br>
-                    120 倒计时2小时<br>
-                    1..48 倒计时1小时48秒
-                </ElText>
-            </div>
-        </div>
     </ElConfigProvider>
 </template>
 <script setup>
 import { ElConfigProvider } from 'element-plus';
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import { ref } from 'vue';
-import { str_to_millseconds, uuidv4 } from './time_function';
-import activity_dial from './components/activity_dial.vue';
 import { useTimerStore } from './stores/timerStore';
-import nav_component from './components/nav.vue';
 import { storeToRefs } from 'pinia';
+import activity_dial from './components/activity_dial.vue';
+import nav_component from './components/nav.vue';
+import timer_creater from './components/timer_creater.vue';
 
-const timer = useTimerStore()
-
-const { timers } = storeToRefs(timer)
-// 快捷设置倒计时
-const count_down_setting = ref('')
-// 新增timer
-function count_down_submit() {
-    const time = str_to_millseconds(count_down_setting.value)
-    if (time) {
-        timer.add_timer({
-            id: uuidv4(),
-            time: time,
-        })
-        return true
-    }
-    return false
-}
+const timer = useTimerStore();
+const { timers } = storeToRefs(timer);
 
 function test() {
     timer.add_timer({
@@ -127,14 +90,6 @@ function test() {
         time: 10000,
         des: '测试',
         state_code: 1,
-    })
-}
-function test2() {
-    timer.add_timer({
-        id: uuidv4(),
-        time: 10000,
-        des: '测试',
-        state_code: 1,
-    })
+    });
 }
 </script>
