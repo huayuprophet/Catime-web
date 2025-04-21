@@ -3,7 +3,7 @@
         <ElSpace>
             <ElText>catime-web </ElText>
             <ElText> {{ yyyymmddhhmmss_now }} </ElText>
-            <ElLink @click="timer.active = -1" :type="!is_active ? 'success' : 'default'"> 激活 </ElLink>
+            <ElLink @click="timer.active = -1" :type="!is_active ? 'success' : 'default'"><ElIcon><Upload /></ElIcon> 激活 </ElLink>
         </ElSpace>
 
 
@@ -12,14 +12,13 @@
 </template>
 
 <script setup>
-// import { storeToRefs } from 'pinia';
 import { useTimerStore } from '@/stores/timerStore';
 import { timestamp_to_datetime } from '@/time_function';
+import { ElIcon } from 'element-plus';
 import { computed } from 'vue';
+import { Upload } from '@element-plus/icons-vue';
 
 const timer = useTimerStore()
-// 当前时间
-// const now = storeToRefs(timer).now
 // 实时时间显示
 const yyyymmddhhmmss_now = computed(() => {
     return timestamp_to_datetime(timer.now)
@@ -30,7 +29,6 @@ const is_active = computed(() => {
 </script>
 <style scoped>
 .nav {
-
     padding-top: 1rem;
     padding-bottom: 1rem;
 }

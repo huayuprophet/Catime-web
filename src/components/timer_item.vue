@@ -46,16 +46,13 @@
                             <!-- {{ is_pause ? '继续' : '暂停' }} -->
                         </ElButton>
                         <ElButton @click="active" :type="is_activated ? 'success' : 'default'" plain>
-                            <el-icon v-show="!is_activated">
-                                <Star />
-                            </el-icon>
-                            <el-icon v-show="is_activated">
-                                <StarFilled />
+                            <el-icon>
+                                <Upload />
                             </el-icon>
                             <!-- 激活 -->
                         </ElButton>
                         <!-- 重置 -->
-                        <el-popconfirm title="确定要从头开始吗" @confirm="timerStore.restart(timer)">
+                        <el-popconfirm title="确定要重置吗" @confirm="timerStore.restart(timer)">
                             <template #reference>
                                 <el-button>
                                     <ElIcon>
@@ -64,17 +61,26 @@
                                 </el-button>
                             </template>
                         </el-popconfirm>
-                        <ElButton @click="timerStore.stop(timer)" type="warning" plain>
-                            <ElIcon>
-                                <Close></Close>
-                            </ElIcon>
-                            <!-- 停止 -->
-                        </ElButton>
-                        <ElButton @click="timerStore.remove(timer)" type="danger" plain>
-                            <ElIcon>
-                                <Delete></Delete>
-                            </ElIcon>
-                        </ElButton>
+                        <!-- 停止 -->
+                        <el-popconfirm title="确定要停止吗" @confirm="timerStore.stop(timer)">
+                            <template #reference>
+                                <el-button type="warning" plain>
+                                    <ElIcon>
+                                        <Remove />
+                                    </ElIcon>
+                                </el-button>
+                            </template>
+                        </el-popconfirm>
+                        <!-- 删除 -->
+                        <el-popconfirm title="确定要删除吗" @confirm="timerStore.remove(timer)">
+                            <template #reference>
+                                <el-button type="danger" plain>
+                                    <ElIcon>
+                                        <Delete />
+                                    </ElIcon>
+                                </el-button>
+                            </template>
+                        </el-popconfirm>
                     </ElButtonGroup>
                 </div>
             </ElCol>
@@ -107,7 +113,7 @@
 </style>
 <script setup>
 import { computed } from 'vue';
-import { VideoPause, VideoPlay, RefreshRight, Close, Star, StarFilled, Delete } from '@element-plus/icons-vue';
+import { VideoPause, VideoPlay, RefreshRight, Remove, Upload, Delete } from '@element-plus/icons-vue';
 import { ms_to_time, timestamp_to_datetime } from '@/time_function';
 import { useTimerStore } from '@/stores/timerStore';
 import { storeToRefs } from 'pinia';

@@ -57,7 +57,9 @@ export const tasks = {
             duration: 0,
         })
     },
-    tomato: (id, time_work, time_rest, repeat, time_rest_big = time_rest) => {
+    tomato: (id, time_work, time_rest, repeat = false, time_rest_big = false) => {
+        repeat ||= 1;
+        time_rest_big ||= time_rest;
         const the_timer = timer.get_timer(id)
         the_timer.step ??= 1;
         the_timer.step++;

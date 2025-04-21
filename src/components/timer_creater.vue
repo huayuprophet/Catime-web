@@ -25,21 +25,34 @@
   </div>
   <div class="tomato creater" v-show="false">
     <!-- 番茄钟添加： -->
-    <ElForm>
+    <ElForm style="max-width: 480px;">
       <ElFormItem label="专注时间">
-        <ElInput v-model="tomato_setting.time">
+        <ElInput v-model="tomato_setting[0]" placeholder="规则与刚才相同 示例 25">
         </ElInput>
       </ElFormItem>
       <ElFormItem label="休息时间">
-        <ElInput v-model="tomato_setting.time">
+        <ElInput v-model="tomato_setting[1]" placeholder="规则与刚才相同 示例 5">
         </ElInput>
       </ElFormItem>
-      <ElFormItem label="休息时间">
-        <ElInput v-model="tomato_setting.time">
+      <ElFormItem label="重复次数">
+        <ElInput v-model="tomato_setting[2]" placeholder="请输入重复次数，不需要则留空">
+        </ElInput>
+      </ElFormItem>
+      <ElFormItem label="大课间">
+        <ElInput v-model="tomato_setting[3]" placeholder="请输入大课间时间，不需要则留空">
         </ElInput>
       </ElFormItem>
     </ElForm>
-    <div>{{ tomato_setting.time }}</div>
+    <ElText type="info">
+      解释：【专注】与【休息】循环进行倒计时，每专注【重复次数】次，休息一次【大课间】。<br>
+      如：专注25分钟，休息5分钟，重复【3】次，大课间10分钟。<br>
+      则：25分钟专注#1，5分钟休息，25分钟专注#2，5分钟休息，25分钟专注#3，10分钟大课间。然后又从头开始。<br>
+    </ElText>
+    <div>
+      <ElText> {{ tomato_setting }}
+      </ElText>
+
+    </div>
   </div>
   <div class="task creater">
     <!-- 任务添加： -->
@@ -75,15 +88,13 @@ function clear_and_create() {
 function cancel() {
   count_down_setting.value = '';
 }
-const tomato_setting = ref({
-  time: 25,
-  short_break: 5,
-  long_break: 15,
-  repeat: 4,
-});
+const tomato_setting = ref([
+
+]);
+// const tomato_setting = ref({});
 // 新增timer
 function tomato_submit() {
-  
+
 }
 
 
