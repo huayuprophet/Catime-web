@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia'
 import { computed, ref, reactive } from 'vue'
 import { uuidv4 } from '@/time_function'
-import { tasks } from '@/task_function'
+import { tasks , task_init} from '@/task_function'
 
 export const useTimerStore = defineStore('timer', () => {
     const timers = ref([])
     const now = ref(Date.now())
     const active = ref('00000000-0000-0000-0000-000000000000')
     // 更新当前时间并检查超时
+    task_init()
     setInterval(() => {
         now.value = Date.now()
         // 检查所有计时器的超时状态

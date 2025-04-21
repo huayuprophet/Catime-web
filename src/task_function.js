@@ -1,13 +1,7 @@
-// console.log('Hello, World!');
 import { useTimerStore } from "./stores/timerStore";
-// import { useTaskStore } from "./stores/taskStore";
 import { ElNotification } from "element-plus";
 
-const timer = useTimerStore();
-function a(str) {
-    console.log(str);
-}
-let b = []
+var timer
 function create_task(timer, name = null, func, ...args) {
     timer.tasks.push(
         {
@@ -19,7 +13,9 @@ function create_task(timer, name = null, func, ...args) {
         }
     )
 }
-
+export function task_init() {
+    timer = useTimerStore();
+}
 export const tasks = {
     restart: (id) => {
         const the_timer = timer.get_timer(id)
