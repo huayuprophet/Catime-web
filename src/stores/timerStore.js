@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref, reactive } from 'vue'
 import { uuidv4 } from '@/time_function'
-import { tasks , task_init} from '@/task_function'
-
+import { tasks, task_init } from '@/task_function'
 export const useTimerStore = defineStore('timer', () => {
     const timers = ref([])
     const now = ref(Date.now())
@@ -40,8 +39,6 @@ export const useTimerStore = defineStore('timer', () => {
     }
     // 绑定计算属性
     function bind_computed(scoped) {
-        // 计算属性：
-        // const scoped = timer;
         // timing 是计时器的运行时间
         scoped.timing = computed(() => {
             return now.value - scoped.time_0// + scoped.jump
@@ -61,7 +58,6 @@ export const useTimerStore = defineStore('timer', () => {
             const result = scoped.state_code === 0 ? (scoped.count_up ? scoped.timing : scoped.down) : (scoped.count_up ? scoped.jump : scoped.time - scoped.jump)
             return result >= 0 ? result : 0
         })
-
     }
     // 暂停计时器
     function pause(timer) {
@@ -140,55 +136,30 @@ export const useTimerStore = defineStore('timer', () => {
     function jumpend(timer) {
         // const timer = timer;
         if (timer.state_code === 0 || timer.state_code === 1) {
-            timer.jump = timer.time; // 跳至结束
-            timer.state_code = 2; // 标记为结束状态
-            // 在这里可以添加结束时应触发的任务
+            timer.time_0 = now.value - timer.time; // 将 time_0 调整为当前时间减去计时器的总时间
+            // 在这里可以添加结束时应触发的任务，但不需要，因为任务函数会在计时器结束时自动执行
             // 例如：timer.tasks.forEach(task => task());
             return true;
         }
         return false;
     }
-    // 群控
+    // 群控，示例： group_control(timers_obj, timer_store.set, idxxxx, { time: 10000 })
     function group_control(timers, func, ...args) {
         timers.forEach(timer => {
             func(timer, ...args)
         })
     }
-    // 接下来帮我示例遍历js对象的实现
-    // 遍历js对象的实现
-
     return {
-        timers,
-        now,
-        add_timer,
-        get_timer,
-        get_index,
-        pause_resume_toggle,
-        pause,
-        resume,
-        stop,
-        set,
-        restart,
-        remove,
-        clear,
-        jumpend,
-        group_control,
-        bind_computed,
-        active,
+        timers, now, add_timer, get_timer, get_index, pause_resume_toggle, pause, resume, stop, set, restart, remove, clear, jumpend, group_control, bind_computed, active,
     }
 }, {
     persist: {
-        beforeHydrate: (ctx) => {
-        },
         afterHydrate: (ctx) => {
             // 重置所有计时器的计算属性，防止在持久化后出现问题
             const timer = useTimerStore()
             timer.timers.forEach(scoped => {
-
                 timer.bind_computed(scoped)
             })
         }
     },
-
-
 })

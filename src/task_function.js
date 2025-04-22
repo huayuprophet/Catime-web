@@ -97,6 +97,22 @@ export const tasks = {
             time: 0,
             state_code: 0,
         })
-    }
-
+    },
+    // 播放wav音乐
+    play_wav: (id = false, url) => {
+        const audio = new Audio(url);
+        audio.play();
+    },
+    // 调用系统通知
+    system_notify: (id = false, title, body) => {
+        if (Notification.permission === 'granted') {
+            new Notification(title, { body });
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    new Notification(title, { body });
+                }
+            });
+        }
+    },
 }

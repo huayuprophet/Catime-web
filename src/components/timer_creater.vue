@@ -23,7 +23,7 @@
       </ElText>
     </div>
   </div>
-  <div class="tomato creater" v-show="false">
+  <div class="tomato creater" v-show="true">
     <!-- 番茄钟添加： -->
     <ElForm style="max-width: 480px;">
       <ElFormItem label="专注时间">
@@ -55,15 +55,36 @@
     </div>
   </div>
   <div class="task creater">
-    <!-- 任务添加： -->
-
+    默认任务：
+    <ElSpace>
+      <template v-for="(task, index) in task_setting" :key="index">
+        <ElTag closable @close="task_setting.splice(index, 1)" @click="">
+          {{ task.name }}
+        </ElTag>
+        <ElInput v-for="(arg, index) in task.args" v-model="task.args[index]"></ElInput>
+      </template>
+      <ElTag closable>
+        1
+      </ElTag>
+      <ElTag closable>
+        1
+      </ElTag>
+      <ElTag closable>
+        1
+      </ElTag>
+      <ElButton circle>
+        <ElIcon>
+          <Plus />
+        </ElIcon>
+      </ElButton>
+    </ElSpace>
   </div>
 </template>
-
 <script setup>
 import { ref } from 'vue';
 import { str_to_millseconds, uuidv4 } from '../time_function';
 import { useTimerStore } from '../stores/timerStore';
+import { Plus } from '@element-plus/icons-vue';
 
 const timer = useTimerStore();
 const count_down_setting = ref('');
@@ -96,6 +117,15 @@ const tomato_setting = ref([
 function tomato_submit() {
 
 }
+const task_setting = ref([
+  {
+    name: '打开网页',
+    func: 'open_url',
+    args: ['http://url/', 66]
+  }
+])
+
+const task_tag_show = ref([]);
 
 
 </script>
