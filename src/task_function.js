@@ -81,7 +81,7 @@ export const tasks = {
             })
         }
     },
-    open_browser: (id = false, url) => {
+    open_url: (id = false, url) => {
         window.open(url, '_blank');
     },
     remove: (id) => {

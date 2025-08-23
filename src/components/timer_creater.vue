@@ -79,12 +79,16 @@
       </ElButton>
     </ElSpace>
   </div>
+  <div>
+    <ElButton @click="task_run">触发示例任务</ElButton>
+  </div>
 </template>
 <script setup>
 import { ref } from 'vue';
 import { str_to_millseconds, uuidv4 } from '../time_function';
 import { useTimerStore } from '../stores/timerStore';
 import { Plus } from '@element-plus/icons-vue';
+import { tasks } from '@/task_function';
 
 const timer = useTimerStore();
 const count_down_setting = ref('');
@@ -121,10 +125,12 @@ const task_setting = ref([
   {
     name: '打开网页',
     func: 'open_url',
-    args: ['http://url/', 66]
+    args: ['http://www.bing.com/', 66]
   }
 ])
-
+function task_run() {
+  tasks[task_setting.value[0].func](false, ...task_setting.value[0].args)
+}
 const task_tag_show = ref([]);
 
 

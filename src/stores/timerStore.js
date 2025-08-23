@@ -33,6 +33,8 @@ export const useTimerStore = defineStore('timer', () => {
         scoped.state_code = scoped.state_code || 0 // 0: 运行中, 1: 暂停, 2: 结束/过期, 3: 停止，4: 已执行任务/跳过任务
         scoped.count_up = false
         scoped.tasks = []
+
+        // 绑定计算属性
         bind_computed(scoped)
         // timers.value.push(scoped)
         timers.value.splice(0, 0, scoped)
@@ -94,7 +96,7 @@ export const useTimerStore = defineStore('timer', () => {
     }
     // 设置计时器属性
     function set(timer, obj, ins = false) {
-        // 是否替换关键属性
+        // 是否替换关键属性，即是否重置计时器到当前时间并计时开始
         if (ins) {
             obj = ins ? {
                 jump: 0,
@@ -156,6 +158,7 @@ export const useTimerStore = defineStore('timer', () => {
     persist: {
         afterHydrate: (ctx) => {
             // 重置所有计时器的计算属性，防止在持久化后出现问题
+            // 没有该方法的话会导致在刷新页面后，所有computed值丢失响应式特性。
             const timer = useTimerStore()
             timer.timers.forEach(scoped => {
                 timer.bind_computed(scoped)
