@@ -10,13 +10,20 @@ export const useTimerStore = defineStore('timer', () => {
     task_init()
     setInterval(() => {
         now.value = Date.now()
+        // console.log(timer.state_code);
         // 检查所有计时器的超时状态
         timers.value.forEach(timer => {
             if (timer.state_code === 0 && timer.down <= 0) {
+                console.log(timer.tasks);
+
                 timer.state_code = 2; // 标记为超时状态
                 timer.tasks.forEach(task => {
                     tasks[task.func](task.timer_id || timer.id, ...task.args); // 执行所有任务，如果没有指定 timer_id，则使用当前计时器的 id
+                    console.log('exec all tasks');
+
                 }); // 执行所有任务
+                console.log('触发超时任务');
+
             }
         })
     }, 150)
@@ -32,7 +39,7 @@ export const useTimerStore = defineStore('timer', () => {
         scoped.created_at = scoped.created_at || now.value
         scoped.state_code = scoped.state_code || 0 // 0: 运行中, 1: 暂停, 2: 结束/过期, 3: 停止，4: 已执行任务/跳过任务
         scoped.count_up = false
-        scoped.tasks = []
+        scoped.tasks ||= []
 
         // 绑定计算属性
         bind_computed(scoped)

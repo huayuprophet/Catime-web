@@ -1,7 +1,7 @@
 import { useTimerStore } from "./stores/timerStore";
 import { ElNotification } from "element-plus";
 
-let timer
+let timer = false
 // timer = useTimerStore();
 function create_task(timer, name = null, func, ...args) {
     timer.tasks.push(
@@ -18,7 +18,7 @@ function create_task(timer, name = null, func, ...args) {
 // 初始化任务函数
 // 注意：此函数必须在使用任务函数之前调用，不设此逻辑的话，任务函数会报错，因为任务函数需要使用timer对象，而timer对象是在useTimerStore函数中创建的，而tasks相关对象是在useTimerStore函数中调用的，这样就会导致循环引用，导致任务函数无法正常使用。
 export function task_init() {
-    timer = useTimerStore();
+    timer ||= useTimerStore();
 }
 export const tasks = {
     restart: (id) => {
@@ -58,6 +58,7 @@ export const tasks = {
         })
     },
     tomato: (id, time_work, time_rest, repeat = false, time_rest_big = false) => {
+        console.log('番茄钟任务');
         repeat ||= 1;
         time_rest_big ||= time_rest;
         const the_timer = timer.get_timer(id)
@@ -65,20 +66,21 @@ export const tasks = {
         the_timer.step++;
         if (the_timer.step % 2 === 0) {
             timer.set(the_timer, {
-                time: time_work,
+                timer_0: timer.now,
                 jump: 0,
-                state_code: 0,
-                timer_0: now.value,
+                time: time_work,
             })
+            the_timer.state_code = 0;
         } else {
             const rest_count = (the_timer.step / 2);
             timer.set(the_timer, {
-                // 检查是否为大课间，是的话使用大课间时间，否则使用小课间时间           
-                time: (rest_count % repeat) === 0 ? time_rest_big : time_rest,
+                // 检查是否为大课间，是的话使用大课间时间，否则使用小课间时间 
+                timer_0: timer.now,
                 jump: 0,
-                state_code: 0,
-                timer_0: now.value,
+                time: (rest_count % repeat) === 0 ? time_rest_big : time_rest,               
+                timer_0: timer.now,
             })
+            the_timer.state_code = 0;
         }
     },
     open_url: (id = false, url) => {
@@ -91,7 +93,7 @@ export const tasks = {
     turn_up: (id) => {
         const the_timer = timer.get_timer(id)
         timer.set(the_timer, {
-            time_0: now.value,
+            time_0: timer.now,
             jump: 0,
             count_up: true,
             time: 0,

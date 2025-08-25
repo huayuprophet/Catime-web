@@ -81,6 +81,7 @@
   </div>
   <div>
     <ElButton @click="task_run">触发示例任务</ElButton>
+    <ElButton @click="tomato_submit">创建示例番茄钟</ElButton>
   </div>
 </template>
 <script setup>
@@ -119,7 +120,15 @@ const tomato_setting = ref([
 // const tomato_setting = ref({});
 // 新增timer
 function tomato_submit() {
-
+timer.add_timer({
+  time:1000,
+  tasks:[{
+    name:'番茄钟示例',
+    func:'tomato',
+    args:[3000,1000,false,8000],
+    timer_id:false
+  }]
+})
 }
 const task_setting = ref([
   {
