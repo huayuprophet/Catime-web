@@ -87,6 +87,9 @@
         </ElRow>
         <!-- 进度条 -->
         <el-progress class="progress" :percentage="progress" :show-text="false" :stroke-width="4" />
+        <!-- <div>
+            {{ timer.down }}
+        </div> -->
         <ElDivider></ElDivider>
     </div>
 </template>

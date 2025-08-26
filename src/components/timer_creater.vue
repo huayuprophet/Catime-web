@@ -121,7 +121,7 @@ const tomato_setting = ref([
 // 新增timer
 function tomato_submit() {
 timer.add_timer({
-  time:1000,
+  time:3000,
   tasks:[{
     name:'番茄钟示例',
     func:'tomato',

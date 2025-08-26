@@ -14,16 +14,13 @@ export const useTimerStore = defineStore('timer', () => {
         // 检查所有计时器的超时状态
         timers.value.forEach(timer => {
             if (timer.state_code === 0 && timer.down <= 0) {
-                console.log(timer.tasks);
-
+                // console.log(timer.tasks);
                 timer.state_code = 2; // 标记为超时状态
                 timer.tasks.forEach(task => {
                     tasks[task.func](task.timer_id || timer.id, ...task.args); // 执行所有任务，如果没有指定 timer_id，则使用当前计时器的 id
                     console.log('exec all tasks');
-
                 }); // 执行所有任务
-                console.log('触发超时任务');
-
+                // console.log('触发超时任务');
             }
         })
     }, 150)
@@ -58,7 +55,7 @@ export const useTimerStore = defineStore('timer', () => {
         })
         // down 是计时器的剩余时间
         scoped.down = computed(() => {
-            return scoped.time_1 - now.value// - scoped.jump
+            return scoped.jump ? scoped.time - scoped.jump : scoped.time_1 - now.value// - scoped.jump
         })
         // 显示的时间，根据状态和是否倒计时进行调整
         scoped.show = computed(() => {
