@@ -35,7 +35,7 @@
             </template>
             <ElSpace>
                 <ElText>
-                    全部
+                    群控
                 </ElText>
                 <ElButtonGroup>
                     <!-- 全部暂停 -->

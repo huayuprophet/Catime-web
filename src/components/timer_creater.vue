@@ -56,31 +56,33 @@
   </div>
   <div class="task creater">
     默认任务：
-    <ElSpace>
-      <template v-for="(task, index) in task_setting" :key="index">
-        <ElTag closable @close="task_setting.splice(index, 1)" @click="">
-          {{ task.name }}
+    <div>
+      <tasks_component :tasks="default_task"></tasks_component>
+    </div>
+    <div>
+      {{ default_task }}
+    </div>
+    <div v-show="false">
+      <ElSpace>
+        <ElTag closable>
+          1
         </ElTag>
-        <ElInput v-for="(arg, index) in task.args" v-model="task.args[index]"></ElInput>
-      </template>
-      <ElTag closable>
-        1
-      </ElTag>
-      <ElTag closable>
-        1
-      </ElTag>
-      <ElTag closable>
-        1
-      </ElTag>
-      <ElButton circle>
-        <ElIcon>
-          <Plus />
-        </ElIcon>
-      </ElButton>
-    </ElSpace>
+        <ElTag closable>
+          1
+        </ElTag>
+        <ElTag closable>
+          1
+        </ElTag>
+        <ElButton circle>
+          <ElIcon>
+            <Plus />
+          </ElIcon>
+        </ElButton>
+      </ElSpace>
+    </div>
   </div>
   <div>
-    <ElButton @click="task_run">触发示例任务</ElButton>
+    <ElButton @click="" v-show="false">触发示例任务</ElButton>
     <ElButton @click="tomato_submit">创建示例番茄钟</ElButton>
   </div>
 </template>
@@ -90,6 +92,7 @@ import { str_to_millseconds, uuidv4 } from '../time_function';
 import { useTimerStore } from '../stores/timerStore';
 import { Plus } from '@element-plus/icons-vue';
 import { tasks } from '@/task_function';
+import tasks_component from '@/components/tasks.vue';
 
 const timer = useTimerStore();
 const count_down_setting = ref('');
@@ -120,27 +123,31 @@ const tomato_setting = ref([
 // const tomato_setting = ref({});
 // 新增timer
 function tomato_submit() {
-timer.add_timer({
-  time:3000,
-  tasks:[{
-    name:'番茄钟示例',
-    func:'tomato',
-    args:[3000,1000,false,8000],
-    timer_id:false
-  }]
-})
+  timer.add_timer({
+    time: 3000,
+    tasks: [{
+      name: '番茄钟示例',
+      func: 'tomato',
+      args: [3000, 1000, 2, 8000],
+      timer_id: false
+    }]
+  })
 }
-const task_setting = ref([
+const default_task =  ref([
   {
     name: '打开网页',
     func: 'open_url',
     args: ['http://www.bing.com/', 66]
-  }
+  },  {
+    name: '打开网页',
+    func: 'open_url',
+    args: ['http://www.bing.com/', 66]
+  },  {
+    name: '打开网页',
+    func: 'open_url',
+    args: ['http://www.bing.com/', 66]
+  },
 ])
-function task_run() {
-  tasks[task_setting.value[0].func](false, ...task_setting.value[0].args)
-}
-const task_tag_show = ref([]);
 
 
 </script>

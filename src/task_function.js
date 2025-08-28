@@ -77,13 +77,12 @@ export const tasks = {
             // console.log(the_timer);
         } else {
             const rest_count = (the_timer.step+1) / 2;
-                    // console.log(rest_count ,2*repeat);
+                    console.log(rest_count % repeat);
             timer.set(the_timer, {
                 // 检查是否为大课间，是的话使用大课间时间，否则使用小课间时间 
                 timer_0: timer.now,
                 jump: 0,
                 time: ((rest_count % repeat) === 0) ? time_rest_big : time_rest,
-                timer_0: timer.now,
                 state_code: 3,
             })
             // console.log(the_timer);
@@ -126,4 +125,8 @@ export const tasks = {
             });
         }
     },
+    custom: (id = false, func) => {
+        const the_timer = timer.get_timer(id)
+        func(the_timer)
+    }
 }
