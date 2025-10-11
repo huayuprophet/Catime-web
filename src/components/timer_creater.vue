@@ -103,6 +103,7 @@ function count_down_submit() {
     timer.add_timer({
       id: uuidv4(),
       time: time,
+      tasks: default_task.value,
     });
     return true;
   }
