@@ -1,4 +1,4 @@
-// import './assets/main.css'
+import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -11,6 +11,7 @@ const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 // 挂载 Pinia
 app.use(pinia)
+// // 挂载ElementPlus
+// app.use(ElementPlus)
 // 挂载应用
 app.mount('#app')
-
