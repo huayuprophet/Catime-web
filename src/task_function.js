@@ -3,6 +3,9 @@ import { ElNotification } from "element-plus";
 
 let timer = false
 // timer = useTimerStore();
+
+// 存储音频实例的映射，用于手动控制播放/停止
+const audioInstances = new Map();
 function create_task(timer, name = null, func, ...args) {
     timer.tasks.push(
         {
@@ -43,7 +46,7 @@ export const tasks = {
     },
     // 发出通知
     notify: (id = false, title, content) => {
-        ElNotification({
+        ({
             title: title,
             message: content,
             duration: 0,
@@ -51,9 +54,9 @@ export const tasks = {
     },
     notify_simple: (id = false) => {
         const the_timer = timer.get_timer(id)
-        ElNotification({
+        const a = ElNotification({
             title: the_timer.des,
-            message: '已完成',
+            message: '已结束',
             duration: 0,
         })
     },
@@ -63,10 +66,7 @@ export const tasks = {
         time_rest_big ||= time_rest;
         const the_timer = timer.get_timer(id)
         the_timer.step ||= 0;
-        the_timer.step+=1;
-        // console.log(the_timer.step);
-
-        
+        the_timer.step += 1;
         if (the_timer.step % 2 === 0) {
             timer.set(the_timer, {
                 timer_0: timer.now,
@@ -74,10 +74,9 @@ export const tasks = {
                 time: time_work,
                 state_code: 3,
             })
-            // console.log(the_timer);
         } else {
-            const rest_count = (the_timer.step+1) / 2;
-                    console.log(rest_count % repeat);
+            const rest_count = (the_timer.step + 1) / 2;
+            console.log(rest_count % repeat);
             timer.set(the_timer, {
                 // 检查是否为大课间，是的话使用大课间时间，否则使用小课间时间 
                 timer_0: timer.now,
@@ -85,11 +84,8 @@ export const tasks = {
                 time: ((rest_count % repeat) === 0) ? time_rest_big : time_rest,
                 state_code: 3,
             })
-            // console.log(the_timer);
         }
         timer.restart(the_timer)
-        // console.log('restart');
-
     },
     open_url: (id = false, url) => {
         window.open(url, '_blank');
@@ -113,6 +109,45 @@ export const tasks = {
         const audio = new Audio(url);
         audio.play();
     },
+    // 播放铃声或音乐
+    play_sound: (id = false, soundUrl, volume = 1.0, duration = null, loop = false) => {
+        try {
+            // 如果之前有同ID的音频正在播放，则先停止
+            if (id && audioInstances.has(id)) {
+                const existingAudio = audioInstances.get(id);
+                existingAudio.pause();
+                existingAudio.currentTime = 0;
+                audioInstances.delete(id);
+            }
+
+            const audio = new Audio(soundUrl);
+            audio.volume = volume;
+            audio.loop = loop;
+
+            // 如果提供了ID，则存储音频实例以便后续控制
+            if (id) {
+                audioInstances.set(id, audio);
+            }
+
+            // 如果设置了持续时间，则在指定时间后停止播放
+            if (duration !== null && !loop) {
+                setTimeout(() => {
+                    if (id && audioInstances.has(id)) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                        audioInstances.delete(id);
+                    } else {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                }, duration * 1000); // 将秒转换为毫秒
+            }
+
+            audio.play().catch(e => console.error('播放音频失败:', e));
+        } catch (error) {
+            console.error('创建音频对象失败:', error);
+        }
+    },
     // 调用系统通知
     system_notify: (id = false, title, body) => {
         if (Notification.permission === 'granted') {
@@ -124,6 +159,17 @@ export const tasks = {
                 }
             });
         }
+    },
+    // 停止指定ID的音频播放
+    stop_sound: (id) => {
+        if (id && audioInstances.has(id)) {
+            const audio = audioInstances.get(id);
+            audio.pause();
+            audio.currentTime = 0;
+            audioInstances.delete(id);
+            return true;
+        }
+        return false;
     },
     custom: (id = false, func) => {
         const the_timer = timer.get_timer(id)

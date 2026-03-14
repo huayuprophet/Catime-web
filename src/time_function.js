@@ -61,7 +61,7 @@ export function str_to_millseconds(str) {
         after = m + s
         console.log(2);
     } else if (len === 3) {
-        let h = numArray[0] * 360000
+        let h = numArray[0] * 3600000
         let m = numArray[1] * 60000
         let s = numArray[2] * 1000
         after = h + m + s

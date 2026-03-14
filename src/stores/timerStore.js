@@ -17,7 +17,8 @@ export const useTimerStore = defineStore('timer', () => {
                 // console.log(timer.tasks);
                 timer.state_code = 2; // 标记为超时状态
                 timer.tasks.forEach(task => {
-                    tasks[task.func](task.timer_id || timer.id, ...task.args); // 执行所有任务，如果没有指定 timer_id，则使用当前计时器的 id
+                    // task.args ||= [];
+                    tasks[task.func](task.timer_id || timer.id, ...task.args || []); // 执行所有任务，如果没有指定 timer_id，则使用当前计时器的 id
                     console.log('exec all tasks');
                 }); // 执行所有任务
                 // console.log('触发超时任务');

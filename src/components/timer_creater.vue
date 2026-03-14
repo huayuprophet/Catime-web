@@ -88,7 +88,7 @@
 </template>
 <script setup>
 import { ref } from 'vue';
-import { str_to_millseconds, uuidv4 } from '../time_function';
+import { ms_to_time, str_to_millseconds, uuidv4 } from '../time_function';
 import { useTimerStore } from '../stores/timerStore';
 import { Plus } from '@element-plus/icons-vue';
 import { tasks } from '@/task_function';
@@ -102,6 +102,7 @@ function count_down_submit() {
   if (time) {
     timer.add_timer({
       id: uuidv4(),
+      des:'倒计时'+ms_to_time(time),
       time: time,
       tasks: default_task.value,
     });
@@ -135,19 +136,23 @@ function tomato_submit() {
   })
 }
 const default_task =  ref([
+  // {
+  //   name: '打开网页',
+  //   func: 'open_url',
+  //   args: ['http://www.bing.com/', 66]
+  // },  {
+  //   name: '打开网页',
+  //   func: 'open_url',
+  //   args: ['http://www.bing.com/', 66]
+  // },  {
+  //   name: '打开网页',
+  //   func: 'open_url',
+  //   args: ['http://www.bing.com/', 66]
+  // },
   {
-    name: '打开网页',
-    func: 'open_url',
-    args: ['http://www.bing.com/', 66]
-  },  {
-    name: '打开网页',
-    func: 'open_url',
-    args: ['http://www.bing.com/', 66]
-  },  {
-    name: '打开网页',
-    func: 'open_url',
-    args: ['http://www.bing.com/', 66]
-  },
+    name:'发出通知',
+    func:'notify_simple',
+  }
 ])
 
 
