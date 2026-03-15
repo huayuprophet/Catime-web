@@ -25,10 +25,6 @@
                     <div>
                         <activity_dial></activity_dial>
                     </div>
-
-                    <div style="margin-bottom: 1rem;">
-                        <timer_creater></timer_creater>
-                    </div>
                     <ElCard>
                         <template #header>
                             计时列表
@@ -73,12 +69,7 @@
 
                 </ElMain>
                 <ElAside>
-                    <ElCard>
-                        <template #header>
-                            通知与提醒
-                        </template>
-
-                    </ElCard>
+                    <notification_panel></notification_panel>
                 </ElAside>
             </ElContainer>
         </ElContainer>
@@ -92,6 +83,7 @@ import { storeToRefs } from 'pinia';
 import activity_dial from './components/activity_dial.vue';
 import nav_component from './components/nav.vue';
 import timer_creater from './components/timer_creater.vue';
+import notification_panel from './components/notification-panel.vue';
 const timer = useTimerStore();
 const { timers } = storeToRefs(timer);
 </script>

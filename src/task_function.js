@@ -1,4 +1,5 @@
 import { useTimerStore } from "./stores/timerStore";
+import { useNotifyStore } from "./stores/notifyStore";
 import { ElNotification } from "element-plus";
 
 let timer = false
@@ -46,19 +47,13 @@ export const tasks = {
     },
     // 发出通知
     notify: (id = false, title, content) => {
-        ({
-            title: title,
-            message: content,
-            duration: 0,
-        })
+        const notifyStore = useNotifyStore();
+        notifyStore.addNotify(id, title, content);
     },
     notify_simple: (id = false) => {
         const the_timer = timer.get_timer(id)
-        const a = ElNotification({
-            title: the_timer.des,
-            message: '已结束',
-            duration: 0,
-        })
+        const notifyStore = useNotifyStore();
+        notifyStore.addNotify(id, the_timer.des, '已结束');
     },
     tomato: (id, time_work, time_rest, repeat = false, time_rest_big = false) => {
         console.log('番茄钟任务');
@@ -103,11 +98,6 @@ export const tasks = {
             time: 0,
             state_code: 0,
         })
-    },
-    // 播放wav音乐
-    play_wav: (id = false, url) => {
-        const audio = new Audio(url);
-        audio.play();
     },
     // 播放铃声或音乐
     play_sound: (id = false, soundUrl, volume = 1.0, duration = null, loop = false) => {

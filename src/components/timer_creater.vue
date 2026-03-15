@@ -101,7 +101,7 @@ function count_down_submit() {
       id: uuidv4(),
       des: '倒计时' + ms_to_time(time),
       time: time,
-      tasks: default_task.value,
+      tasks: [...default_task.value],
     });
     return true;
   }
@@ -152,6 +152,12 @@ const default_task = ref([
   {
     name: '通知',
     func: 'notify_simple',
+  },
+  {
+    name: '铃声',
+    func: 'play_sound'
+    ,
+    args: ['./sounds/xiaomi2019.mp3', 1, 60000, true]
   }
 ])
 const page = ref(0)
