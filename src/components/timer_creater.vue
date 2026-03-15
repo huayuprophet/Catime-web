@@ -1,90 +1,86 @@
 <template>
-  <div class="down creater">
-    <!-- 倒计时添加： -->
-    <ElForm @submit.prevent="count_down_submit" style="max-width: 480px;">
-      <ElFormItem>
-        <ElInput v-model="count_down_setting"></ElInput>
-      </ElFormItem>
-      <ElFormItem>
-        <ElButton @click="count_down_submit" type="primary">创建</ElButton>
-        <ElButton @click="clear_and_create">清空并创建</ElButton>
-        <ElButton @click="cancel">取消</ElButton>
-      </ElFormItem>
-    </ElForm>
-    <div>
-      <ElText type="info">
-        规则：[时].[分].[秒] 或 [分].[秒] 或 [分]。示例：<br>
-        2.6.50 倒计时2小时6分钟50秒。<br>
-        2.20 倒计时2分钟20秒<br>
-        120 倒计时120分钟<br>
-        也可以：.40 倒计时40秒；
-        1..48 倒计时1小时0分钟48秒；
-        5.20. 倒计时5小时20分钟0秒。
-      </ElText>
-    </div>
-  </div>
-  <div class="tomato creater" v-show="true">
-    <!-- 番茄钟添加： -->
-    <ElForm style="max-width: 480px;">
-      <ElFormItem label="专注时间">
-        <ElInput v-model="tomato_setting[0]" placeholder="规则与刚才相同 示例 25">
-        </ElInput>
-      </ElFormItem>
-      <ElFormItem label="休息时间">
-        <ElInput v-model="tomato_setting[1]" placeholder="规则与刚才相同 示例 5">
-        </ElInput>
-      </ElFormItem>
-      <ElFormItem label="重复次数">
-        <ElInput v-model="tomato_setting[2]" placeholder="请输入重复次数，不需要则留空">
-        </ElInput>
-      </ElFormItem>
-      <ElFormItem label="大课间">
-        <ElInput v-model="tomato_setting[3]" placeholder="请输入大课间时间，不需要则留空">
-        </ElInput>
-      </ElFormItem>
-    </ElForm>
-    <ElText type="info">
-      解释：【专注】与【休息】循环进行倒计时，每专注【重复次数】次，休息一次【大课间】。<br>
-      如：专注25分钟，休息5分钟，重复【3】次，大课间10分钟。<br>
-      则：25分钟专注#1，5分钟休息，25分钟专注#2，5分钟休息，25分钟专注#3，10分钟大课间。然后又从头开始。<br>
-    </ElText>
-    <div>
-      <ElText> {{ tomato_setting }}
-      </ElText>
+  <ElSpace direction="vertical">
 
+    <ElButtonGroup>
+      <ElButton @click="switchPage(0)" :type="page === 0 ? 'primary' : 'default'">
+        倒计时
+      </ElButton>
+      <ElButton @click="switchPage(1)" :type="page === 1 ? 'primary' : 'default'">
+        番茄钟
+      </ElButton>
+    </ElButtonGroup>
+    <div class="down creater" v-show="page === 0">
+      <!-- 倒计时添加： -->
+      <ElForm @submit.prevent="count_down_submit" style="max-width: 480px;">
+        <ElFormItem>
+          <ElInput v-model="count_down_setting" clearable></ElInput>
+        </ElFormItem>
+        <ElFormItem>
+          <ElButton @click="count_down_submit" type="primary">创建</ElButton>
+          <ElButton @click="clear_and_create">清空并创建</ElButton>
+          <ElButton @click="cancel">取消</ElButton>
+        </ElFormItem>
+      </ElForm>
+      <div>
+        <ElText type="info">
+          规则：<br>
+          [时].[分].[秒]<br>
+          [分].[秒]<br>
+          [分]<br>
+          示例：<br>
+          2.6.50 -- 倒计时2小时6分钟50秒。<br>
+          2.20 -- 倒计时2分钟20秒<br>
+          120 -- 倒计时120分钟<br>
+          也可以：.40 倒计时40秒；1..48 倒计时1小时0分钟48秒；5.20. 倒计时5小时20分钟0秒。
+        </ElText>
+      </div>
     </div>
-  </div>
-  <div class="task creater">
-    默认任务：
-    <div>
-      <tasks_component :tasks="default_task"></tasks_component>
+    <div class="tomato creater" v-show="page === 1">
+      <!-- 番茄钟添加： -->
+      <ElForm style="max-width: 480px;">
+        <ElFormItem label="专注时间">
+          <ElInput v-model="tomato_setting[0]" placeholder="规则与倒计时相同 示例 25">
+          </ElInput>
+        </ElFormItem>
+        <ElFormItem label="休息时间">
+          <ElInput v-model="tomato_setting[1]" placeholder="规则与倒计时相同 示例 5">
+          </ElInput>
+        </ElFormItem>
+        <ElFormItem label="重复次数">
+          <ElInput v-model="tomato_setting[2]" placeholder="不需要则留空">
+          </ElInput>
+        </ElFormItem>
+        <ElFormItem label="大课间">
+          <ElInput v-model="tomato_setting[3]" placeholder="不需要则留空">
+          </ElInput>
+        </ElFormItem>
+        <ElButton @click="tomato_submit">创建示例番茄钟</ElButton>
+      </ElForm>
+      <ElText type="info">
+        解释：【专注】与【休息】循环进行倒计时，每专注【重复次数】次，休息一次【大课间】。<br>
+        如：专注25分钟，休息5分钟，重复【3】次，大课间10分钟。<br>
+        则：25分钟专注#1，5分钟休息，25分钟专注#2，5分钟休息，25分钟专注#3，10分钟大课间。然后又从头开始。<br>
+      </ElText>
+      <div>
+        <ElText> {{ tomato_setting }}
+        </ElText>
+
+      </div>
     </div>
-    <div>
-      {{ default_task }}
+    <div class="task creater">
+      默认任务：
+      <div>
+        <tasks_component :tasks="default_task"></tasks_component>
+      </div>
+      <div>
+        {{ default_task }}
+      </div>
     </div>
     <div v-show="false">
-      <ElSpace>
-        <ElTag closable>
-          1
-        </ElTag>
-        <ElTag closable>
-          1
-        </ElTag>
-        <ElTag closable>
-          1
-        </ElTag>
-        <ElButton circle>
-          <ElIcon>
-            <Plus />
-          </ElIcon>
-        </ElButton>
-      </ElSpace>
+      <ElButton @click="" v-show="false">触发示例任务</ElButton>
+      <ElButton @click="tomato_submit">创建示例番茄钟</ElButton>
     </div>
-  </div>
-  <div>
-    <ElButton @click="" v-show="false">触发示例任务</ElButton>
-    <ElButton @click="tomato_submit">创建示例番茄钟</ElButton>
-  </div>
+  </ElSpace>
 </template>
 <script setup>
 import { ref } from 'vue';
@@ -93,6 +89,7 @@ import { useTimerStore } from '../stores/timerStore';
 import { Plus } from '@element-plus/icons-vue';
 import { tasks } from '@/task_function';
 import tasks_component from '@/components/tasks.vue';
+import { VelocityTracker } from 'gsap/all';
 
 const timer = useTimerStore();
 const count_down_setting = ref('');
@@ -102,7 +99,7 @@ function count_down_submit() {
   if (time) {
     timer.add_timer({
       id: uuidv4(),
-      des:'倒计时'+ms_to_time(time),
+      des: '倒计时' + ms_to_time(time),
       time: time,
       tasks: default_task.value,
     });
@@ -119,23 +116,26 @@ function clear_and_create() {
 function cancel() {
   count_down_setting.value = '';
 }
-const tomato_setting = ref([
-
-]);
-// const tomato_setting = ref({});
+const tomato_setting = ref([]);
 // 新增timer
 function tomato_submit() {
+  // 创建一个新的数组副本，避免直接修改原始的响应式数据
+  const submit_time = [...tomato_setting.value];
+  submit_time[0] = str_to_millseconds(submit_time[0]);
+  submit_time[1] = str_to_millseconds(submit_time[1]);
+  submit_time[2] ||= false
+  submit_time[3] = submit_time[3] ? str_to_millseconds(submit_time[3]) : false
   timer.add_timer({
-    time: 3000,
+    time: submit_time[0],
     tasks: [{
-      name: '番茄钟示例',
+      name: '番茄钟事件',
       func: 'tomato',
-      args: [3000, 1000, 2, 8000],
+      args: submit_time,
       timer_id: false
     }]
   })
 }
-const default_task =  ref([
+const default_task = ref([
   // {
   //   name: '打开网页',
   //   func: 'open_url',
@@ -150,10 +150,15 @@ const default_task =  ref([
   //   args: ['http://www.bing.com/', 66]
   // },
   {
-    name:'发出通知',
-    func:'notify_simple',
+    name: '通知',
+    func: 'notify_simple',
   }
 ])
+const page = ref(0)
 
+// 切换页面的方法
+function switchPage(index) {
+  page.value = index;
+}
 
 </script>

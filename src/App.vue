@@ -1,42 +1,31 @@
 <template>
-    <ElContainer>
-
-        <ElHeader>
-            <nav_component></nav_component>
-        </ElHeader>
+    <ElConfigProvider :locale="zhCn">
         <ElContainer>
-            <ElAside>
-                aside
-            </ElAside>
+            <ElHeader>
+                <nav_component></nav_component>
+            </ElHeader>
+            <ElContainer>
+                <ElAside>
+                    <ElSpace direction="vertical" :fill="true">
+                        <ElCard>
+                            <!-- 1 -->
+                            <template #header>
+                                快速创建
+                            </template>
+                            <timer_creater></timer_creater>
+                        </ElCard>
+                        <ElCard>
+                            <template #header>
+                                收藏夹
+                            </template>
+                        </ElCard>
+                    </ElSpace>
+                </ElAside>
+                <ElMain>
+                    <div>
+                        <activity_dial></activity_dial>
+                    </div>
 
-            <ElMain>
-
-
-                <div v-show="false">
-                    <ElText>
-                        {{ timers }}
-                    </ElText>
-                </div>
-                <div v-show="false">
-                    <ElText>
-                        {{ timer.active }}
-                    </ElText>
-                </div>
-                <div v-show="false">
-                    <ElButton @click="test">
-                        测试创建一个预制参数的timer
-                    </ElButton>
-                    <ElButton>
-                        测试群控
-                    </ElButton>
-                    <ElButton>
-                        模拟timeout以测试触发结束事件
-                    </ElButton>
-                </div>
-                <div>
-                    <activity_dial></activity_dial>
-                </div>
-                <ElConfigProvider :locale="zhCn">
                     <div style="margin-bottom: 1rem;">
                         <timer_creater></timer_creater>
                     </div>
@@ -81,13 +70,19 @@
                             <ElEmpty></ElEmpty>
                         </div>
                     </ElCard>
-                </ElConfigProvider>
-            </ElMain>
-            <ElAside>
-                aside
-            </ElAside>
+
+                </ElMain>
+                <ElAside>
+                    <ElCard>
+                        <template #header>
+                            通知与提醒
+                        </template>
+
+                    </ElCard>
+                </ElAside>
+            </ElContainer>
         </ElContainer>
-    </ElContainer>
+    </ElConfigProvider>
 </template>
 <script setup>
 import { ElConfigProvider } from 'element-plus';
@@ -99,13 +94,4 @@ import nav_component from './components/nav.vue';
 import timer_creater from './components/timer_creater.vue';
 const timer = useTimerStore();
 const { timers } = storeToRefs(timer);
-
-function test() {
-    timer.add_timer({
-        id: uuidv4(),
-        time: 10000,
-        des: '测试',
-        state_code: 1,
-    });
-}
 </script>
