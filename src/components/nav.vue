@@ -1,14 +1,13 @@
 <template>
-    <div class="nav">
-        <ElSpace>
-            <ElText>catime-web </ElText>
-            <ElText> {{ yyyymmddhhmmss_now }} </ElText>
-            <ElLink @click="timer.active = -1" :type="!is_active ? 'success' : 'default'"><ElIcon><Upload /></ElIcon> 激活 </ElLink>
-        </ElSpace>
-
-
-
-    </div>
+    <ElSpace>
+        <ElText>catime-web </ElText>
+        <ElText> {{ yyyymmddhhmmss_now }} </ElText>
+        <ElLink @click="timer.active = -1" :type="!is_active ? 'success' : 'default'">
+            <ElIcon>
+                <Upload />
+            </ElIcon> 上墙
+        </ElLink>
+    </ElSpace>
 </template>
 
 <script setup>
